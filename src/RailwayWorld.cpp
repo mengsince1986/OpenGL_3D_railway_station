@@ -1,8 +1,8 @@
 //  ========================================================================
 //  COSC363: Computer Graphics (2022);  University of Canterbury.
-//
+//  Assignment 1
 //  FILE NAME: RailwayWorld.cpp
-//  See Lab02.pdf for details
+//  See README.md for details
 //  ========================================================================
 
 #include <math.h>
@@ -194,10 +194,10 @@ void display(void)
        glPopMatrix();
    }
 
-   // Create a wagon for dummy sign
+   // Create a train station
    glPushMatrix();
    glTranslatef(-160, 1, 0);
-   wagon();
+   railwayStation();
    glPopMatrix();
 
    glutSwapBuffers();   //Useful for animation
