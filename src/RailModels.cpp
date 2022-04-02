@@ -59,7 +59,7 @@ void floor()
 // The tracks are modelled using small quadrilateral segments each covering 5 deg arc
 // The tracks have a height of 1 unit (refer to lab notes)
 //-----------------------------------------------------------------
-void tracks(float medRadius, float width)  
+void tracks(float medRadius, float width)
 {
 	float inRad  = medRadius - width * 0.5;
 	float outRad = medRadius + width * 0.5;
@@ -130,7 +130,7 @@ void base()
 
     //4 Wheels (radius = 2 units)
 	//x, z positions of wheels:
-	float wx[4] = {  -8,   8,   -8,    8 }; 
+	float wx[4] = {  -8,   8,   -8,    8 };
 	float wz[4] = { 5.1, 5.1, -5.1, -5.1 };
     glColor4f(0.5, 0., 0., 1.0);    //Wheel color
 	GLUquadric *q = gluNewQuadric();   //Disc
@@ -188,14 +188,76 @@ void engine()
 //--------------------------------------------------------
 void wagon()
 {
+   
     base();
 
+    float wagonLength = 9;
+
+    /*
     glColor4f(0.0, 1.0, 1.0, 1.0);
     glPushMatrix();
       glTranslatef(0.0, 10.0, 0.0);
       glScalef(18.0, 10.0, 10.0);
       glutSolidCube(1.0);
     glPopMatrix();
+    */
+
+	glColor4f(1.0, 1.0, 1.0, 1.0);
+
+    // glEnable(GL_TEXTURE_2D);
+    // glBindTexture(GL_TEXTURE_2D, txId);
+    
+	//3 large polygons (front, back, top)
+	glBegin(GL_QUADS);
+    glNormal3f(0.0, 0.0, 1.0);   //Facing +z (Front side)
+    //    glTexCoord2f(0., 0.);
+      glVertex3f(-wagonLength, 5.0, 6.0);
+    //    glTexCoord2f(1., 0.);
+      glVertex3f(wagonLength, 5.0, 6.0);
+    //    glTexCoord2f(1., 87./256.);
+      glVertex3f(wagonLength, 17.0, 6.0);
+    //    glTexCoord2f(0., 87./256.);
+      glVertex3f(-wagonLength, 17.0, 6.0);
+
+      glNormal3f(0.0, 0.0, -1.0);   //Facing -z (Back side)
+    //    glTexCoord2f(0., 0.);
+      glVertex3f(wagonLength, 5.0, -6.0);
+    //    glTexCoord2f(1., 0.);
+      glVertex3f(-wagonLength, 5.0,-6.0);
+    //    glTexCoord2f(1., 87./256.);
+      glVertex3f(-wagonLength, 17.0,-6.0);
+    //    glTexCoord2f(0., 87./256.);
+      glVertex3f(wagonLength, 17.0, -6.0);
+
+      glNormal3f(0.0, 1.0, 0.0);   //Facing +y (Top side)
+    // glTexCoord2f(0., 115./256.);
+      glVertex3f(-wagonLength  , 17.0, 6.0);
+    // glTexCoord2f(1., 115./256.);
+      glVertex3f(wagonLength  , 17.0,  6.0);
+    // glTexCoord2f(1., 212./256.);
+      glVertex3f(wagonLength, 17.0, -6.0);
+    // glTexCoord2f(0., 212./256.);
+      glVertex3f(-wagonLength, 17.0, -6.0);
+	glEnd();
+
+	// 2 small side polygons (left, right)
+    // glDisable(GL_TEXTURE_2D);
+    
+	glColor4f(0.5, 0.5, 0.0, 1.0);
+	glBegin(GL_QUADS);
+      glNormal3f(-1.0, 0.0, 0.0);   //Facing -x (Left side)
+	  glVertex3f(-wagonLength, 5.0, -6.0);
+	  glVertex3f(-wagonLength, 5.0, 6.0);
+	  glVertex3f(-wagonLength, 17.0, 6.0);
+	  glVertex3f(-wagonLength, 17.0, -6.0);
+
+	  glNormal3f(1.0, 0.0, 0.0);   //Facing +x (Right side)
+	  glVertex3f(wagonLength, 5.0, 6.0);
+	  glVertex3f(wagonLength, 5.0, -6.0);
+	  glVertex3f(wagonLength, 17.0, -6.0);
+	  glVertex3f(wagonLength, 17.0, 6.0);
+	glEnd();
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -203,6 +265,168 @@ void wagon()
 ///////////////////////////////////////////////////////////////////////////////
 void railwayStation()
 {
-    glColor4f(0.0, 1.0, 1.0, 1.0);
-    glutSolidCube(10.0);
+    float baseHeight = 6.0;
+    // base
+    glColor4f(0.7, 0.7, 0.7, 1.0);
+    glPushMatrix();
+    glScalef(80.0, baseHeight, 180.0);     //Size 8x15 units, thickness 1 unit.
+    glutSolidCube(1.0);
+    glPopMatrix();
+
+    /*
+    // building-1
+    glColor4f(0.5, 0.5, 0.5, 1.0);
+    glPushMatrix();
+    glTranslatef(-20.0, baseHeight, 40.0);
+    glScalef(30.0, building1Height, 60.0);     //Size 3x7 units, thickness 5 unit.
+    glutSolidCube(1.0);
+    glPopMatrix();
+
+    // building-2
+    glColor4f(0.5, 0.5, 0.5, 1.0);
+    glPushMatrix();
+    glTranslatef(-20.0, baseHeight, 0.0);
+    glScalef(30.0, building2Height, 20.0);     //Size 3x7 units, thickness 5 unit.
+    glutSolidCube(1.0);
+    glPopMatrix();
+    */
+
+    // Quads building-1
+    glPushMatrix();
+    glTranslatef(-15.0, 4, 40.0);
+    glRotatef(90, 0, 1, 0);
+    building(30, 15, 40);
+    glPopMatrix();
+
+    // Quads building-2
+    glPushMatrix();
+    glTranslatef(-15.0, 4, 0.0);
+    glRotatef(90, 0, 1, 0);
+    building(12, 15, 20);
+    glPopMatrix();
+
+    // slope-1
+    glPushMatrix();
+    glTranslatef(-100, 50, 0.0);
+    // glRotatef(90, 0, 1, 0);
+    slope(12, 15, 20);
+    glPopMatrix();
+}
+
+void building(float length, float width, float height)
+{
+    float buildingbaseHeight = 0.01;
+
+	glColor4f(1.0, 1.0, 1.0, 1.0);
+
+    // glEnable(GL_TEXTURE_2D);
+    // glBindTexture(GL_TEXTURE_2D, txId);
+    
+	// 3 large polygons (front, back, top)
+	glBegin(GL_QUADS);
+      glNormal3f(0.0, 0.0, 1.0);   //Facing +z (Front side)
+    //    glTexCoord2f(0., 0.);
+      glVertex3f(-length, buildingbaseHeight, width);
+    //    glTexCoord2f(1., 0.);
+      glVertex3f(length, buildingbaseHeight, width);
+    //    glTexCoord2f(1., 87./256.);
+      glVertex3f(length, height, width);
+    //    glTexCoord2f(0., 87./256.);
+      glVertex3f(-length, height, width);
+
+      glNormal3f(0.0, 0.0, -1.0);   //Facing -z (Back side)
+    //    glTexCoord2f(0., 0.);
+      glVertex3f(length, buildingbaseHeight, -width);
+    //    glTexCoord2f(1., 0.);
+      glVertex3f(-length, buildingbaseHeight,-width);
+    //    glTexCoord2f(1., 87./256.);
+      glVertex3f(-length, height,-width);
+    //    glTexCoord2f(0., 87./256.);
+      glVertex3f(length, height, -width);
+
+      glNormal3f(0.0, 1.0, 0.0);   //Facing +y (Top side)
+    // glTexCoord2f(0., 115./256.);
+      glVertex3f(-length, height, width);
+    // glTexCoord2f(1., 115./256.);
+      glVertex3f(length, height,  width);
+    // glTexCoord2f(1., 212./256.);
+      glVertex3f(length, height, -width);
+    // glTexCoord2f(0., 212./256.);
+      glVertex3f(-length, height, -width);
+	glEnd();
+
+	// 2 small side polygons (left, right)
+    // glDisable(GL_TEXTURE_2D);
+	glColor4f(0.5, 0.5, 0.0, 1.0);
+	glBegin(GL_QUADS);
+      glNormal3f(-1.0, 0.0, 0.0);   //Facing -x (Left side)
+	  glVertex3f(-length, buildingbaseHeight, -width);
+	  glVertex3f(-length, buildingbaseHeight, width);
+	  glVertex3f(-length, height, width);
+	  glVertex3f(-length, height, -width);
+
+      glNormal3f(1.0, 0.0, 0.0);   //Facing +x (Right side)
+	  glVertex3f(length, buildingbaseHeight, width);
+	  glVertex3f(length, buildingbaseHeight, -width);
+	  glVertex3f(length, height, -width);
+	  glVertex3f(length, height, width);
+	glEnd();
+}
+
+void slope(float length, float width, float height)
+{
+    float buildingbaseHeight = 0.01;
+
+	glColor4f(1.0, 1.0, 1.0, 1.0);
+
+    // glEnable(GL_TEXTURE_2D);
+    // glBindTexture(GL_TEXTURE_2D, txId);
+    
+	// 3 large polygons (front, back, top)
+	glBegin(GL_QUADS);
+      glNormal3f(0.0, 0.0, 1.0);   //Facing +z (Front side)
+    //    glTexCoord2f(0., 0.);
+      glVertex3f(-length, buildingbaseHeight, width);
+    //    glTexCoord2f(1., 0.);
+      glVertex3f(length, buildingbaseHeight, width);
+    //    glTexCoord2f(1., 87./256.);
+      glVertex3f(length, height, width);
+    //    glTexCoord2f(0., 87./256.);
+      glVertex3f(-length, height, width);
+
+      glNormal3f(0.0, 0.0, -1.0);   //Facing -z (Back side)
+    //    glTexCoord2f(0., 0.);
+      glVertex3f(length, buildingbaseHeight, -width);
+    //    glTexCoord2f(1., 0.);
+      glVertex3f(-length, buildingbaseHeight,-width);
+    //    glTexCoord2f(1., 87./256.);
+      glVertex3f(-length, height, width);
+    //    glTexCoord2f(0., 87./256.);
+      glVertex3f(length, height, width);
+
+      glNormal3f(0.0, 1.0, 0.0);   //Facing +y (bottom side)
+    // glTexCoord2f(0., 115./256.);
+      glVertex3f(-length, buildingbaseHeight, width);
+    // glTexCoord2f(1., 115./256.);
+      glVertex3f(length, buildingbaseHeight,  width);
+    // glTexCoord2f(1., 212./256.);
+      glVertex3f(length, buildingbaseHeight, -width);
+    // glTexCoord2f(0., 212./256.);
+      glVertex3f(-length, buildingbaseHeight, -width);
+	glEnd();
+
+	// 2 small side triangles (left, right)
+    // glDisable(GL_TEXTURE_2D);
+	glColor4f(0.5, 0.5, 0.0, 1.0);
+	glBegin(GL_TRIANGLES);
+      glNormal3f(-1.0, 0.0, 0.0);   //Facing -x (Left side)
+	  glVertex3f(-length, buildingbaseHeight, -width);
+	  glVertex3f(-length, buildingbaseHeight, width);
+	  glVertex3f(-length, height, width);
+
+	  glNormal3f(1.0, 0.0, 0.0);   //Facing +x (Right side)
+	  glVertex3f(length, buildingbaseHeight, -width);
+	  glVertex3f(length, buildingbaseHeight, width);
+	  glVertex3f(length, height, width);
+	glEnd();
 }

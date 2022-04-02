@@ -14,3 +14,7 @@ void engine();
 void wagon();
 
 void railwayStation();
+
+void building(float length,float width,float height);
+
+void slope(float length, float width, float height);
