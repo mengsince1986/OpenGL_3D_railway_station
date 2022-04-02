@@ -15,6 +15,14 @@ void wagon();
 
 void railwayStation();
 
-void block(float length,float width,float height);
+void blockBase(float length,float width,float height);
 
-void slope(float length, float width, float height);
+void block1(float length,float width,float height);
+
+void block2(float length,float width,float height);
+
+void slope1(float length, float width, float height);
+
+void slope2(float length, float width, float height);
+
+void roof(float length, float width, float height);
