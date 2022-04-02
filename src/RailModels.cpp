@@ -9,6 +9,12 @@
 #include <GL/freeglut.h>
 #include "RailModels.h"
 
+#include <iostream>
+#include <fstream>
+#include <climits>
+#include <math.h>
+using namespace std;
+
 //--------------- GROUND PLANE ------------------------------------
 // This is a square shaped region on the xz-plane of size 400x400 units
 // centered at the origin.  This region is constructed using small quads
@@ -108,6 +114,45 @@ void tracks(float medRadius, float width)
 	glEnd();
 }
 
+//-- Loads Oval.txt
+float *x, *y, *z;					//vertex coordinates
+int nvert;					//total number of vertices
+void loadOvalFile(const char* fname)  
+{
+	ifstream fp_in;
+	int ne;
+
+	fp_in.open(fname, ios::in);
+	if(!fp_in.is_open())
+	{
+		cout << "Error opening mesh file" << endl;
+		exit(1);
+	}
+
+	fp_in >> nvert;			    // read number of vertices, polygons, edges (not used)
+
+    x = new float[nvert];                        //create arrays
+    y = new float[nvert];
+    z = new float[nvert];
+
+    //read vertex list 
+	for(int i=0; i < nvert; i++) {
+        fp_in >> x[i] >> z[i];
+        y[i] = 0.1;
+    }                        
+		
+	fp_in.close();
+    cout<< x << endl;
+    cout<< y << endl;
+    cout<< z << endl;
+	cout << " File successfully read." << endl;
+}
+
+// draw the oval median line
+void ovalMedianLine()
+{
+    loadOvalFile("Oval.txt");
+}
 
 //--------------- MODEL BASE --------------------------------------
 // This is a common base for the locomotive and wagons

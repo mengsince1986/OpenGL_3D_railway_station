@@ -200,6 +200,11 @@ void display(void)
    railwayStation();
    glPopMatrix();
 
+   // Create oval tracks
+   glPopMatrix();
+   ovalMedianLine();
+   glPopMatrix();
+
    glutSwapBuffers();   //Useful for animation
 }
 

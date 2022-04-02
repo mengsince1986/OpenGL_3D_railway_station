@@ -26,3 +26,7 @@ void slope1(float length, float width, float height);
 void slope2(float length, float width, float height);
 
 void roof(float length, float width, float height);
+
+void loadOvalFile(const char* fname);
+
+void ovalMedianLine();
