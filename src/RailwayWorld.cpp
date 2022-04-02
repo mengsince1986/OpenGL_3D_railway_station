@@ -196,7 +196,7 @@ void display(void)
 
    // Create a train station
    glPushMatrix();
-   glTranslatef(-180, 1, 0);
+   glTranslatef(-180, 0.1, 0);
    railwayStation();
    glPopMatrix();
 

@@ -265,6 +265,7 @@ void wagon()
 ///////////////////////////////////////////////////////////////////////////////
 void railwayStation()
 {
+    /*
     float baseHeight = 6.0;
     // base
     glColor4f(0.7, 0.7, 0.7, 1.0);
@@ -272,7 +273,7 @@ void railwayStation()
     glScalef(80.0, baseHeight, 180.0);     //Size 8x15 units, thickness 1 unit.
     glutSolidCube(1.0);
     glPopMatrix();
-
+    *
     /*
     // building-1
     glColor4f(0.5, 0.5, 0.5, 1.0);
@@ -290,30 +291,46 @@ void railwayStation()
     glutSolidCube(1.0);
     glPopMatrix();
     */
+    // Quads base
+    glPushMatrix();
+    glTranslatef(0, 0, 0);
+    // glRotatef(90, 0, 1, 0);
+    block(40, 80, 5);
+    glPopMatrix();
 
     // Quads building-1
     glPushMatrix();
     glTranslatef(-15.0, 4, 40.0);
     glRotatef(90, 0, 1, 0);
-    building(30, 15, 40);
+    block(30, 10, 35);
     glPopMatrix();
 
     // Quads building-2
     glPushMatrix();
     glTranslatef(-15.0, 4, 0.0);
     glRotatef(90, 0, 1, 0);
-    building(12, 15, 20);
+    block(12, 10, 20);
     glPopMatrix();
 
-    // slope-1
+    // base slope
     glPushMatrix();
-    glTranslatef(-100, 50, 0.0);
-    // glRotatef(90, 0, 1, 0);
-    slope(12, 15, 20);
+    glTranslatef(0.0, 0.0, -130.0);
+    slope(40, 50, 5);
+    glPopMatrix();
+
+    // building shade cover
+    glPushMatrix();
+    glTranslatef(10.0, 37, 40.0);
+    glRotatef(-90, 0, 1, 0);
+    slope(30, 20, 2);
     glPopMatrix();
 }
 
-void building(float length, float width, float height)
+///////////////////////////////////////////////////////////////////////////////
+//                                Basic Units                                //
+///////////////////////////////////////////////////////////////////////////////
+
+void block(float length, float width, float height)
 {
     float buildingbaseHeight = 0.01;
 
@@ -357,7 +374,7 @@ void building(float length, float width, float height)
 
 	// 2 small side polygons (left, right)
     // glDisable(GL_TEXTURE_2D);
-	glColor4f(0.5, 0.5, 0.0, 1.0);
+	glColor4f(0.5, 0.5, 0.5, 1.0);
 	glBegin(GL_QUADS);
       glNormal3f(-1.0, 0.0, 0.0);   //Facing -x (Left side)
 	  glVertex3f(-length, buildingbaseHeight, -width);
@@ -375,7 +392,7 @@ void building(float length, float width, float height)
 
 void slope(float length, float width, float height)
 {
-    float buildingbaseHeight = 0.01;
+    float buildingbaseHeight = 0.0;
 
 	glColor4f(1.0, 1.0, 1.0, 1.0);
 
@@ -417,7 +434,7 @@ void slope(float length, float width, float height)
 
 	// 2 small side triangles (left, right)
     // glDisable(GL_TEXTURE_2D);
-	glColor4f(0.5, 0.5, 0.0, 1.0);
+	glColor4f(0.5, 0.5, 0.5, 1.0);
 	glBegin(GL_TRIANGLES);
       glNormal3f(-1.0, 0.0, 0.0);   //Facing -x (Left side)
 	  glVertex3f(-length, buildingbaseHeight, -width);
