@@ -2,7 +2,8 @@
 //  COSC363: Computer Graphics (2022);  University of Canterbury.
 //  Assignment 1
 //  FILE NAME: RailwayWorld.cpp
-//  See README.md for details
+//  Author: MENG ZHANG
+//  Student ID: 71682325
 //  ========================================================================
 
 #include <math.h>
@@ -21,14 +22,19 @@ using namespace std;
 ///////////////////////////////////////////////////////////////////////////////
 //                              Global Variables                             //
 ///////////////////////////////////////////////////////////////////////////////
-// Train moving angle
+// Train moving index
 int THETA = 0;
+// Train current postion
+float icurrX;
+float icurrZ;
 // Train stop postion angle
 int trainStopPos = 110;
+int trainStopX = 15;
+int trainStopZ = 40;
 // Camera defaut params
 float angle = 0.0;
 float eye_x = 3 * sin(angle);
-float eye_y = 200;
+float eye_y = 250;
 float eye_z = 150 + 3 * cos(angle);
 float look_x = eye_x + 100 * sin(angle);
 float look_y = 0.0;
@@ -36,7 +42,7 @@ float look_z = eye_z - 100 * cos(angle);
 // Track Coordinates
 float *posX, *posZ;
 int nvert;				// total number of vertices
-float *posAngleCache;   // to store the moving posAngles for each vertices
+float *posAngleCache;   // a array of  the moving posAngles for each vertices
 
 ///////////////////////////////////////////////////////////////////////////////
 //                          Track Coordinates Loader                         //
@@ -52,9 +58,9 @@ void loadOvalFile(const char* fname)
 		exit(1);
 	}
 
-	fp_in >> nvert;			    // read number of vertices, polygons, edges (not used)
+	fp_in >> nvert;
 
-    posX = new float[nvert];                        //create arrays
+    posX = new float[nvert];
     posZ = new float[nvert];
     posAngleCache = new float[nvert];
 
@@ -68,36 +74,15 @@ void loadOvalFile(const char* fname)
 	cout << " File successfully read." << endl;
 }
 
-/*
-void load8CurveCords()
-{
-    // Eight Curve parametric equations:
-    // x = a * sin(t)
-    // y = a * sin(t) * cos(t)
-    float trackRadius = 100;
-    float toRad = 3.14159265/180.0;  //Conversion from degrees to radians
-    float angle, x, z;
-    nvert = 360;
-    posX = new float[nvert];                        //create arrays
-    posZ = new float[nvert];
-    posAngleCache = new float[nvert];
-    for (int i = 0; i < nvert; i++) {
-        angle = i * toRad;
-        posX[i]  = trackRadius * sin(angle);
-        posZ[i] = trackRadius * sin(angle) * cos(angle);
-        posAngleCache[i] = -1;
-    }
-}
-*/
-
 ///////////////////////////////////////////////////////////////////////////////
 //                          Timer Callback Function
 ///////////////////////////////////////////////////////////////////////////////
 void myTimer(int value)
 {
     static int trainTimer = 0;
-    int trainPos = THETA;
-    if (trainPos == trainStopPos || (trainPos-trainStopPos)%360 == 0) {
+    icurrX = posX[THETA];
+    icurrZ = posZ[THETA];
+    if (icurrX == trainStopX && icurrZ == trainStopZ) {
         trainTimer++;
         if (trainTimer >= 60) {
             THETA++;
@@ -115,8 +100,6 @@ void myTimer(int value)
 ///////////////////////////////////////////////////////////////////////////////
 //                             Special Key Events                            //
 ///////////////////////////////////////////////////////////////////////////////
-// To enable the use of left and right arrow keys to rotate the scene
-
 void special(int key, int x, int y)
 {
 	if(key == GLUT_KEY_LEFT) angle -= 0.05;  //Change direction
@@ -145,7 +128,7 @@ void special(int key, int x, int y)
     { // Camera back to defaut view
          angle = 0.0;
          eye_x = 3*sin(angle);
-         eye_y = 200;
+         eye_y = 250;
          eye_z = 150 + 3*cos(angle);
          look_x = eye_x + 100*sin(angle);
          look_y = 0.0;
@@ -163,7 +146,6 @@ void initialize(void)
 {
     // load track coordinates
     loadOvalFile("Oval.txt");
-    //    load8CurveCords();
     // set lighting color
     float grey[4] = {0.2, 0.2, 0.2, 1.0};
     float white[4]  = {1.0, 1.0, 1.0, 1.0};
@@ -184,7 +166,7 @@ void initialize(void)
     glLightfv(GL_LIGHT1, GL_AMBIENT, grey);
     glLightfv(GL_LIGHT1, GL_DIFFUSE, white);
     glLightfv(GL_LIGHT1, GL_SPECULAR, white);
-    glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, 30.0);
+    glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, 20.0);
     glLightf(GL_LIGHT1, GL_SPOT_EXPONENT, 0.01);
 
 	glEnable(GL_DEPTH_TEST);
@@ -217,47 +199,29 @@ void display(void)
    glLoadIdentity();
 
    // Camera view config
-   // // Move camra backwards by changing z from 180 to 250
-   // gluLookAt (-80, 50, 250, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
    gluLookAt(eye_x, eye_y, eye_z,  look_x, look_y, look_z,   0.0, 1.0, 0.0);
    glLightfv(GL_LIGHT0, GL_POSITION, lgt_pos);   // light0 position
 
    // Create floor
    floor();
-   // Create tracks
-   // // mean radius 120 units, width 10 units
-   // tracks(120, 10);
 
-   // // use oval tracks
-   // glPushMatrix();
-   //   ovalTracks(nvert, posX, posZ);
-   //   glPopMatrix();
-   // // use eightCurveTracks
-
-   // // use 8 cruve tracks;
+   // Create tack median line
    glPushMatrix();
    createTrackMedianLine(nvert, posX, posZ);
    glPopMatrix();
-   
-   // Create engine (locomotive) moving around circle
-   // glPushMatrix();
-   //   glRotatef(THETA, 0, 1, 0);
-   // // Move the locomotive from its current position at the origin
-   // // to position (0, 1, -120)
-   //   glTranslatef(0, 1, -120);
-   //   engine();
-   //   glPopMatrix();
 
-
-   // Create engine (locomotive) moving around loaded tracks
+   // Create engine (locomotive) moving around tracks
+   // // Calculate the moving parameters for the engine
+   // // if THETA reaches the last vertix, wrap to the first one
    if (THETA >= nvert) {
        THETA = 0;
    }
    float radToDegree = 180 / 3.14159265;
-   float icurrX = posX[THETA];
-   float icurrZ = posZ[THETA];
+   icurrX = posX[THETA];
+   icurrZ = posZ[THETA];
    float posAngle;
    if (posAngleCache[THETA] == -1) {
+       // if no posAngle at this vertix has been cached
        float icurrXPlusK;
        if (THETA == nvert - 1) {
            icurrXPlusK = posX[0];
@@ -283,60 +247,33 @@ void display(void)
            icurrZMinusK = posZ[THETA - 1];
        }
 
+       // get x and y of  moving direction vector
        float dirX = icurrXPlusK - icurrXMinusK;
        float dirZ = icurrZPlusK - icurrZMinusK;
+       // convert moving direction vector to a unit vector
        glm::vec3 dirV(dirX, 1, dirZ);
        glm::vec3 dirUv = glm::normalize(dirV);
+       // get the posAngle from the x and z of moving direction vector
        float uX = dirUv[0];
        float uZ = dirUv[2];
        posAngle = atan2(uZ, -uX) * radToDegree;
        posAngleCache[THETA] = posAngle;
    } else
-   {
+   {   // if posAngle is already cached
        posAngle = posAngleCache[THETA];
    }
+   // //  Create and move the engine
    glPushMatrix();
-   // // Move the locomotive from its current position at the origin
-   // // to position (0, 1, -120)
    glTranslatef(icurrX, 1, icurrZ);
    glRotatef(posAngle, 0, 1, 0);
-   // glScalef(0.5, 0.5, 0.5);
    engine();
    glPopMatrix();
-
-   /*
-   // Create engine moving around 8 curve
-   float a = 265.0;
-   float toRad = 3.14159265/180.0;  //Conversion from degrees to radians
-   float radToDegree = 180 / 3.14159265;
-   float currentT = THETA * toRad;
-   float currentX = a * sin(currentT);
-   float currentZ = a * sin(currentT) * cos(currentT);
-   float nextT = (THETA + 1) * toRad;
-   float nextX = a * sin(nextT);
-   float nextZ = a * sin(nextT) * cos(nextT);
-   float dirX = (nextX - currentX);
-   float dirZ = (nextZ - currentZ);
-   float dirV = sqrt(dirX * dirX + 1 * 1 + dirZ * dirZ);
-   float dirUX = dirX / dirV;
-   float dirUZ = dirZ / dirV;
-   float rotateAngle = atan2(dirUZ, -dirUX) * radToDegree;
-   glPushMatrix();
-   glTranslatef(a * sin(THETA*toRad), 1.0, a*sin(THETA*toRad)*cos(THETA*toRad));
-   glRotatef(rotateAngle, 0, 1, 0);
-   glRotatef(rotateAngle, 0, 1, 0);
-   engine();
-   glPopMatrix();
-   */
 
    // Create Locomotive headlight
-   // // light1 position
    float lgt_pos_1 [] = {-10.0f, 14.0f, 0.0f, 1.0f};
    float spotdir[] = {-1, -1, 0};
    glPushMatrix();
-   // translate the same as locomotive
-   //glRotatef(THETA, 0, 1, 0);
-   // glTranslatef(0, 1, -120);
+   // //  translate the same as locomotive
    glTranslatef(icurrX, 1, icurrZ);
    glRotatef(posAngle, 0, 1, 0);
    // // light1 direction
@@ -346,51 +283,42 @@ void display(void)
    glPopMatrix();
 
    // Create wagons
-   // and then rotate it about the y-axis by 10.5 degrees for circle tracks
-   /*
-   int wagonNum = 4;
-   for (int i = 1; i < wagonNum + 1; i++) {
-       glPushMatrix();
-       glRotatef(-10.5 * i + THETA, 0, 1, 0);
-       // // and translate it to (0, 1, -120)
-       glTranslatef(0, 1, -120);
-       wagon();
-       glPopMatrix();
-   }
-   */
-   float wagonCurrX, wagonCurrZ, wagonPosAngle, wagonCurrXPlusK, wagonCurrZPlusK, wagonCurrXMinusK, wagonCurrZMinusK, wagonDirX, wagonDirZ;
+   float wagonPosAngle;
    int wagonTHETA = THETA - 22;
-   int wagonNum = 3;
+   int wagonNum = 2;
    for (int i = 1; i < wagonNum + 1; i++) {
        if (wagonTHETA < 0) {
            wagonTHETA = nvert + wagonTHETA;
        }
-       wagonCurrX = posX[wagonTHETA];
-       wagonCurrZ = posZ[wagonTHETA];
+       float wagonCurrX = posX[wagonTHETA];
+       float wagonCurrZ = posZ[wagonTHETA];
        if (posAngleCache[wagonTHETA] == -1) {
+           float wagonCurrXPlusK;
            if (wagonTHETA == nvert - 1) {
                wagonCurrXPlusK = posX[0];
            } else {
                wagonCurrXPlusK = posX[wagonTHETA + 1];
            }
+           float wagonCurrZPlusK;
            if (wagonTHETA == nvert - 1) {
                wagonCurrZPlusK = posZ[0];
            } else {
                wagonCurrZPlusK = posZ[wagonTHETA + 1];
            }
+           float wagonCurrXMinusK;
            if (wagonTHETA == 0) {
                wagonCurrXMinusK = posX[nvert-1];
            } else {
                wagonCurrXMinusK = posX[wagonTHETA - 1];
            }
+           float wagonCurrZMinusK;
            if (wagonTHETA == 0) {
                wagonCurrZMinusK = posZ[nvert-1];
            } else {
                wagonCurrZMinusK = posZ[wagonTHETA - 1];
            }
-
-           wagonDirX = wagonCurrXPlusK - wagonCurrXMinusK;
-           wagonDirZ = wagonCurrZPlusK - wagonCurrZMinusK;
+           float wagonDirX = wagonCurrXPlusK - wagonCurrXMinusK;
+           float wagonDirZ = wagonCurrZPlusK - wagonCurrZMinusK;
            glm::vec3 wagonDirV(wagonDirX, 1, wagonDirZ);
            glm::vec3 wagonDirUv = glm::normalize(wagonDirV);
            float wagonUX = wagonDirUv[0];
@@ -398,7 +326,7 @@ void display(void)
            wagonPosAngle = atan2(wagonUZ, -wagonUX) * radToDegree;
            posAngleCache[wagonTHETA] = wagonPosAngle;
        } else {
-           wagonPosAngle = posAngleCache[wagonTHETA];           
+           wagonPosAngle = posAngleCache[wagonTHETA];
        }
        glPushMatrix();
        glTranslatef(wagonCurrX, 1, wagonCurrZ);
@@ -408,13 +336,13 @@ void display(void)
        glPopMatrix();
        wagonTHETA = wagonTHETA - 22;
    }
-   
+
 
    // Create a train station
    glPushMatrix();
-   glTranslatef(0, 1, -90);
-   glRotatef(-90, 0, 1, 0);
-   glScalef(0.5, 0.5, 0.5);
+   glTranslatef(0, 1, 90);
+   glRotatef(90, 0, 1, 0);
+   // glScalef(0.5, 0.5, 0.5);
    railwayStation();
    glPopMatrix();
 

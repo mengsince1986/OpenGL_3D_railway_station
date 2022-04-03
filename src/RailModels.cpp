@@ -1,8 +1,9 @@
 //  ========================================================================
 //  COSC363: Computer Graphics (2022);  University of Canterbury.
-//
-//  RailModels.cpp
-//  A collection of functions for generating the models for a railway scene
+//  Assignment 1
+//  FILE NAME: RailModels.cpp
+//  Author: MENG ZHANG
+//  Student ID: 71682325
 //  ========================================================================
 
 #include <cmath>
@@ -15,11 +16,10 @@
 #include <math.h>
 using namespace std;
 
-//--------------- GROUND PLANE ------------------------------------
-// This is a square shaped region on the xz-plane of size 400x400 units
-// centered at the origin.  This region is constructed using small quads
-// of unit size, to facilitate rendering of spotlights
-//-----------------------------------------------------------------
+///////////////////////////////////////////////////////////////////////////////
+//                                   FLOOR                                   //
+///////////////////////////////////////////////////////////////////////////////
+
 void floor()
 {
 	float white[4] = {1., 1., 1., 1.};
@@ -47,6 +47,8 @@ void floor()
 			glVertex3f(i+1, 0, j);
 		}
 	}
+
+    // Single quad floor
     /*
     glVertex3f(-1000, 0, -1000);
     glVertex3f(-1000, 0, 1000);
@@ -60,11 +62,10 @@ void floor()
 
 }
 
-//--------------- RAILWAY TRACK ------------------------------------
-// A circular railway track of specified median radius and width
-// The tracks are modelled using small quadrilateral segments each covering 5 deg arc
-// The tracks have a height of 1 unit (refer to lab notes)
-//-----------------------------------------------------------------
+///////////////////////////////////////////////////////////////////////////////
+//                               Railway Tracks                              //
+///////////////////////////////////////////////////////////////////////////////
+
 void tracks(float medRadius, float width)
 {
 	float inRad  = medRadius - width * 0.5;
@@ -114,20 +115,6 @@ void tracks(float medRadius, float width)
 	glEnd();
 }
 
-/*
-void ovalTracks(const int nvert, const float* x, const float* z)
-{
-    glColor4f(0.0, 1.0, 1.0, 1.0);
-    glBegin(GL_LINE_LOOP);
-    glNormal3f(0, 1, 0);
-    for (int i = 0; i < nvert; i++)
-    {
-        glVertex3f(x[i], 1.0, z[i]);
-    }
-    glEnd();
-}
-*/
-
 void createTrackMedianLine(const int nvert, const float* x, const float* z)
 {
     glColor4f(0.0, 1.0, 1.0, 1.0);
@@ -140,26 +127,6 @@ void createTrackMedianLine(const int nvert, const float* x, const float* z)
     glEnd();
 }
 
-/*
-void eightCurveTracks() {
-    // Eight Curve parametric equations:
-    // x = a * sin(t)
-    // y = a * sin(t) * cos(t)
-    float a = 265.0;
-    float toRad = 3.14159265/180.0;  //Conversion from degrees to radians
-    glColor4f(0.0, 1.0, 1.0, 1.0);
-    glBegin(GL_LINE_LOOP);
-    glNormal3f(0, 1, 0);
-    float x, z, t;
-    for (int i = 0; i < 720; i++) {
-        t= i * toRad;
-        x = a * sin(t);
-        z = a * sin(t) * cos(t);
-        glVertex3f(x, 1.0, z);
-    }
-    glEnd();
-}
-*/
 
 //--------------- MODEL BASE --------------------------------------
 // This is a common base for the locomotive and wagons
@@ -234,10 +201,10 @@ void engine()
 
 }
 
-//--------------- WAGON ----------------------------------
-// This simple model of a rail wagon consists of the base,
-// and a cube(!)
-//--------------------------------------------------------
+///////////////////////////////////////////////////////////////////////////////
+//                                     WAGON                                    //
+///////////////////////////////////////////////////////////////////////////////
+
 void wagon()
 {
    
@@ -312,7 +279,8 @@ void railwayStation()
     glPushMatrix();
     glTranslatef(0, 0, 0);
     // glRotatef(90, 0, 1, 0);
-    blockBase(40, 80, 5);
+    //    blockBase(40, 80, 5);
+    blockBase(30, 70, 5);
     glPopMatrix();
 
     // Quads building-1
@@ -360,8 +328,8 @@ void railwayStation()
 
     // base slope
     glPushMatrix();
-    glTranslatef(0.0, 0.0, -130.0);
-    slope1(40, 50, 5);
+    glTranslatef(0.0, 0.0, -105.0);
+    slope1(30, 35, 5);
     glPopMatrix();
 }
 
