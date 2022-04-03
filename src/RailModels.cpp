@@ -114,6 +114,7 @@ void tracks(float medRadius, float width)
 	glEnd();
 }
 
+/*
 void ovalTracks(const int nvert, const float* x, const float* z)
 {
     glColor4f(0.0, 1.0, 1.0, 1.0);
@@ -125,6 +126,7 @@ void ovalTracks(const int nvert, const float* x, const float* z)
     }
     glEnd();
 }
+*/
 
 void createTrackMedianLine(const int nvert, const float* x, const float* z)
 {
@@ -138,6 +140,7 @@ void createTrackMedianLine(const int nvert, const float* x, const float* z)
     glEnd();
 }
 
+/*
 void eightCurveTracks() {
     // Eight Curve parametric equations:
     // x = a * sin(t)
@@ -156,6 +159,7 @@ void eightCurveTracks() {
     }
     glEnd();
 }
+*/
 
 //--------------- MODEL BASE --------------------------------------
 // This is a common base for the locomotive and wagons
