@@ -6,24 +6,82 @@
 //  ========================================================================
 
 #include <math.h>
+#include <cmath>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include <GL/freeglut.h>
 #include "RailModels.h"
+
+#include <iostream>
+#include <fstream>
+#include <climits>
+#include <math.h>
+using namespace std;
 
 ///////////////////////////////////////////////////////////////////////////////
 //                              Global Variables                             //
 ///////////////////////////////////////////////////////////////////////////////
 // Train moving angle
-float THETA = 0.0;
+int THETA = 0;
 // Train stop postion angle
 int trainStopPos = 110;
 // Camera defaut params
 float angle = 0.0;
 float eye_x = 3 * sin(angle);
-float eye_y = 400;
+float eye_y = 200;
 float eye_z = 150 + 3 * cos(angle);
 float look_x = eye_x + 100 * sin(angle);
 float look_y = 0.0;
 float look_z = eye_z - 100 * cos(angle);
+// Track Coordinates
+float *ovalX, *ovalZ;
+int nvert;				// total number of vertices
+
+///////////////////////////////////////////////////////////////////////////////
+//                          Track Coordinates Loader                         //
+///////////////////////////////////////////////////////////////////////////////
+
+void loadOvalFile(const char* fname)
+{
+	ifstream fp_in;
+	fp_in.open(fname, ios::in);
+	if(!fp_in.is_open())
+	{
+		cout << "Error opening mesh file" << endl;
+		exit(1);
+	}
+
+	fp_in >> nvert;			    // read number of vertices, polygons, edges (not used)
+
+    ovalX = new float[nvert];                        //create arrays
+    ovalZ = new float[nvert];
+
+    //read vertex list
+	for(int i=0; i < nvert; i++) {
+        fp_in >> ovalX[i] >> ovalZ[i];
+    }
+
+	fp_in.close();
+	cout << " File successfully read." << endl;
+}
+
+void load8CurveCords()
+{
+    // Eight Curve parametric equations:
+    // x = a * sin(t)
+    // y = a * sin(t) * cos(t)
+    float trackRadius = 100;
+    float toRad = 3.14159265/180.0;  //Conversion from degrees to radians
+    float angle, x, z;
+    nvert = 360;
+    ovalX = new float[nvert];                        //create arrays
+    ovalZ = new float[nvert];
+    for (int i = 0; i < nvert; i++) {
+        angle = i * toRad;
+        ovalX[i]  = trackRadius * sin(angle);
+        ovalZ[i] = trackRadius * sin(angle) * cos(angle);
+    }
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 //                          Timer Callback Function
@@ -39,11 +97,11 @@ void myTimer(int value)
             trainTimer = 0;
         }
         glutPostRedisplay();
-        glutTimerFunc(50, myTimer, 0);        
+        glutTimerFunc(50, myTimer, 0);
     } else {
         THETA++;
         glutPostRedisplay();
-        glutTimerFunc(50, myTimer, 0);        
+        glutTimerFunc(50, myTimer, 0);
     }
 }
 
@@ -80,7 +138,7 @@ void special(int key, int x, int y)
     { // Camera back to defaut view
          angle = 0.0;
          eye_x = 3*sin(angle);
-         eye_y = 400;
+         eye_y = 200;
          eye_z = 150 + 3*cos(angle);
          look_x = eye_x + 100*sin(angle);
          look_y = 0.0;
@@ -96,6 +154,10 @@ void special(int key, int x, int y)
 ///////////////////////////////////////////////////////////////////////////////
 void initialize(void)
 {
+    // load track coordinates
+    //    loadOvalFile("Oval.txt");
+    load8CurveCords();
+    // set lighting color
     float grey[4] = {0.2, 0.2, 0.2, 1.0};
     float white[4]  = {1.0, 1.0, 1.0, 1.0};
 
@@ -157,16 +219,101 @@ void display(void)
    floor();
    // Create tracks
    // // mean radius 120 units, width 10 units
-   tracks(120, 10);
+   // tracks(120, 10);
 
-   // Create engine (locomotive)
+   // // use oval tracks
+   // glPushMatrix();
+   //   ovalTracks(nvert, ovalX, ovalZ);
+   //   glPopMatrix();
+   // // use eightCurveTracks
+
+   // // use 8 cruve tracks;
    glPushMatrix();
-   glRotatef(THETA, 0, 1, 0);
+   createTrackMedianLine(nvert, ovalX, ovalZ);
+   glPopMatrix();
+   
+   // Create engine (locomotive) moving around circle
+   // glPushMatrix();
+   //   glRotatef(THETA, 0, 1, 0);
    // // Move the locomotive from its current position at the origin
    // // to position (0, 1, -120)
-   glTranslatef(0, 1, -120);
+   //   glTranslatef(0, 1, -120);
+   //   engine();
+   //   glPopMatrix();
+
+
+   // Create engine (locomotive) moving around loaded tracks
+   if (THETA >= nvert) {
+       THETA = 0;
+   }
+   float radToDegree = 180 / 3.14159265;
+   float icurrX = ovalX[THETA];
+   float icurrZ = ovalZ[THETA];
+   float icurrXPlusK;
+   if (THETA == nvert - 1) {
+       icurrXPlusK = ovalX[0];
+   } else {
+       icurrXPlusK = ovalX[THETA + 1];
+   }
+   float icurrZPlusK;
+   if (THETA == nvert - 1) {
+       icurrZPlusK = ovalZ[0];
+   } else {
+       icurrZPlusK = ovalZ[THETA + 1];
+   }
+   float icurrXMinusK;
+   if (THETA == 0) {
+       icurrXMinusK = ovalX[nvert-1];
+   } else {
+       icurrXMinusK = ovalX[THETA - 1];
+   }
+   float icurrZMinusK;
+   if (THETA == 0) {
+       icurrZMinusK = ovalZ[nvert-1];
+   } else {
+       icurrZMinusK = ovalZ[THETA - 1];
+   }
+
+   float dirX = icurrXPlusK - icurrXMinusK;
+   float dirZ = icurrZPlusK - icurrZMinusK;
+   glm::vec3 dirV(dirX, 1, dirZ);
+   glm::vec3 dirUv = glm::normalize(dirV);
+   float uX = dirUv[0];
+   float uZ = dirUv[2];
+   float posAngle = atan2(uZ, -uX) * radToDegree;
+   glPushMatrix();
+   // // Move the locomotive from its current position at the origin
+   // // to position (0, 1, -120)
+   glTranslatef(icurrX, 1, icurrZ);
+   glRotatef(posAngle, 0, 1, 0);
+   //   glScalef(0.5, 0.5, 0.5);
    engine();
    glPopMatrix();
+
+   /*
+   // Create engine moving around 8 curve
+   float a = 265.0;
+   float toRad = 3.14159265/180.0;  //Conversion from degrees to radians
+   float radToDegree = 180 / 3.14159265;
+   float currentT = THETA * toRad;
+   float currentX = a * sin(currentT);
+   float currentZ = a * sin(currentT) * cos(currentT);
+   float nextT = (THETA + 1) * toRad;
+   float nextX = a * sin(nextT);
+   float nextZ = a * sin(nextT) * cos(nextT);
+   float dirX = (nextX - currentX);
+   float dirZ = (nextZ - currentZ);
+   float dirV = sqrt(dirX * dirX + 1 * 1 + dirZ * dirZ);
+   float dirUX = dirX / dirV;
+   float dirUZ = dirZ / dirV;
+   float rotateAngle = atan2(dirUZ, -dirUX) * radToDegree;
+   glPushMatrix();
+   glTranslatef(a * sin(THETA*toRad), 1.0, a*sin(THETA*toRad)*cos(THETA*toRad));
+   glRotatef(rotateAngle, 0, 1, 0);
+   glRotatef(rotateAngle, 0, 1, 0);
+   engine();
+   glPopMatrix();
+   */
 
    // Create Locomotive headlight
    // // light1 position
@@ -184,6 +331,7 @@ void display(void)
 
    // Create wagons
    // and then rotate it about the y-axis by 10.5 degrees
+   
    int wagonNum = 4;
    for (int i = 1; i < wagonNum + 1; i++) {
        glPushMatrix();
@@ -193,16 +341,13 @@ void display(void)
        wagon();
        glPopMatrix();
    }
-
+   
    // Create a train station
    glPushMatrix();
-   glTranslatef(-180, 0.1, 0);
+   glTranslatef(0, 1, -90);
+   glRotatef(-90, 0, 1, 0);
+   glScalef(0.5, 0.5, 0.5);
    railwayStation();
-   glPopMatrix();
-
-   // Create oval tracks
-   glPopMatrix();
-   ovalMedianLine();
    glPopMatrix();
 
    glutSwapBuffers();   //Useful for animation

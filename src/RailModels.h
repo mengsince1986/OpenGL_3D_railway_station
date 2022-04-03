@@ -7,7 +7,13 @@
 
 void floor();
 
-void tracks(float, float) ; 
+void tracks(float, float) ;
+
+void ovalTracks(const int nvert, const float* x, const float* z);
+
+void createTrackMedianLine(const int nvert, const float* x, const float* z);
+
+void eightCurveTracks();
 
 void engine();
 
@@ -26,7 +32,3 @@ void slope1(float length, float width, float height);
 void slope2(float length, float width, float height);
 
 void roof(float length, float width, float height);
-
-void loadOvalFile(const char* fname);
-
-void ovalMedianLine();

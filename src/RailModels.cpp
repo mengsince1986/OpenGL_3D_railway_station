@@ -114,44 +114,47 @@ void tracks(float medRadius, float width)
 	glEnd();
 }
 
-//-- Loads Oval.txt
-float *x, *y, *z;					//vertex coordinates
-int nvert;					//total number of vertices
-void loadOvalFile(const char* fname)  
+void ovalTracks(const int nvert, const float* x, const float* z)
 {
-	ifstream fp_in;
-	int ne;
-
-	fp_in.open(fname, ios::in);
-	if(!fp_in.is_open())
-	{
-		cout << "Error opening mesh file" << endl;
-		exit(1);
-	}
-
-	fp_in >> nvert;			    // read number of vertices, polygons, edges (not used)
-
-    x = new float[nvert];                        //create arrays
-    y = new float[nvert];
-    z = new float[nvert];
-
-    //read vertex list 
-	for(int i=0; i < nvert; i++) {
-        fp_in >> x[i] >> z[i];
-        y[i] = 0.1;
-    }                        
-		
-	fp_in.close();
-    cout<< x << endl;
-    cout<< y << endl;
-    cout<< z << endl;
-	cout << " File successfully read." << endl;
+    glColor4f(0.0, 1.0, 1.0, 1.0);
+    glBegin(GL_LINE_LOOP);
+    glNormal3f(0, 1, 0);
+    for (int i = 0; i < nvert; i++)
+    {
+        glVertex3f(x[i], 1.0, z[i]);
+    }
+    glEnd();
 }
 
-// draw the oval median line
-void ovalMedianLine()
+void createTrackMedianLine(const int nvert, const float* x, const float* z)
 {
-    loadOvalFile("Oval.txt");
+    glColor4f(0.0, 1.0, 1.0, 1.0);
+    glBegin(GL_LINE_LOOP);
+    glNormal3f(0, 1, 0);
+    for (int i = 0; i < nvert; i++)
+    {
+        glVertex3f(x[i], 1.0, z[i]);
+    }
+    glEnd();
+}
+
+void eightCurveTracks() {
+    // Eight Curve parametric equations:
+    // x = a * sin(t)
+    // y = a * sin(t) * cos(t)
+    float a = 265.0;
+    float toRad = 3.14159265/180.0;  //Conversion from degrees to radians
+    glColor4f(0.0, 1.0, 1.0, 1.0);
+    glBegin(GL_LINE_LOOP);
+    glNormal3f(0, 1, 0);
+    float x, z, t;
+    for (int i = 0; i < 720; i++) {
+        t= i * toRad;
+        x = a * sin(t);
+        z = a * sin(t) * cos(t);
+        glVertex3f(x, 1.0, z);
+    }
+    glEnd();
 }
 
 //--------------- MODEL BASE --------------------------------------
