@@ -207,7 +207,9 @@ void display(void)
 
    // Create tack median line
    glPushMatrix();
-   createTrackMedianLine(nvert, posX, posZ);
+   //   createTrackMedianLine(nvert, posX, posZ);
+   tracks(7, nvert, posX, posZ);
+   sleepers(nvert, posX, posZ);
    glPopMatrix();
 
    // Create engine (locomotive) moving around tracks
@@ -285,7 +287,7 @@ void display(void)
    // Create wagons
    float wagonPosAngle;
    int wagonTHETA = THETA - 22;
-   int wagonNum = 2;
+   int wagonNum = 3;
    for (int i = 1; i < wagonNum + 1; i++) {
        if (wagonTHETA < 0) {
            wagonTHETA = nvert + wagonTHETA;
@@ -340,7 +342,7 @@ void display(void)
 
    // Create a train station
    glPushMatrix();
-   glTranslatef(0, 1, 90);
+   glTranslatef(30, 1, 85);
    glRotatef(90, 0, 1, 0);
    // glScalef(0.5, 0.5, 0.5);
    railwayStation();

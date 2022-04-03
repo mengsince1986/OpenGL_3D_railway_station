@@ -8,6 +8,8 @@
 
 #include <cmath>
 #include <GL/freeglut.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include "RailModels.h"
 
 #include <iostream>
@@ -65,7 +67,7 @@ void floor()
 ///////////////////////////////////////////////////////////////////////////////
 //                               Railway Tracks                              //
 ///////////////////////////////////////////////////////////////////////////////
-
+/*
 void tracks(float medRadius, float width)
 {
 	float inRad  = medRadius - width * 0.5;
@@ -114,6 +116,7 @@ void tracks(float medRadius, float width)
 	}
 	glEnd();
 }
+*/
 
 void createTrackMedianLine(const int nvert, const float* x, const float* z)
 {
@@ -123,6 +126,154 @@ void createTrackMedianLine(const int nvert, const float* x, const float* z)
     for (int i = 0; i < nvert; i++)
     {
         glVertex3f(x[i], 1.0, z[i]);
+    }
+    glEnd();
+}
+
+void tracks(const float width, const int nvert, const float* x, const float* z)
+{
+    float p1x,p1z, p2x,p2z, p3x, p3z;
+    float quadWidth = 3;
+    glColor4f(0.0, 0.0, 0.5, 1.0);
+    glBegin(GL_QUADS);
+    for (int i = 0; i < nvert; i++) // for two parallel tracks
+    {
+        if (i == nvert - 2)
+        {
+            p1x = x[i]; p1z = z[i];
+            p2x = x[i+1]; p2z = z[i+1];
+            p3x = x[0]; p3z = z[0];
+        } else if (i == nvert - 1)
+        {
+            p1x = x[i]; p1z = z[i];
+            p2x = x[0]; p2z = z[0];
+            p3x = x[1]; p3z = z[1];
+        } else
+        {
+            p1x = x[i]; p1z = z[i];
+            p2x = x[i+1]; p2z = z[i+1];
+            p3x = x[i+2]; p3z = z[i+2];
+        }
+
+        glm::vec3 p1(p1x, 1, p1z);
+        glm::vec3 p1p2(p2x-p1x, 1, p2z-p1z);
+        glm::vec3 p1p2U = glm::normalize(p1p2);
+        glm::vec3 v1(p1p2U[2], 1, -p1p2U[0]);
+        glm::vec3 v1U = glm::normalize(v1);
+        glm::vec3 a1 = p1 + v1U * width;
+        glm::vec3 a2 = p1 + v1U * (width + quadWidth);
+        glm::vec3 c1 = p1 + (-v1U) * width;
+        glm::vec3 c2 = p1 + (-v1U) * (width + quadWidth);
+
+        glm::vec3 p2(p2x, 1, p2z);
+        glm::vec3 p2p3(p3x-p2x, 1, p3z-p2z);
+        glm::vec3 p2p3U = glm::normalize(p2p3);
+        glm::vec3 v2(p2p3U[2], 1, -p2p3U[0]);
+        glm::vec3 v2U = glm::normalize(v2);
+        glm::vec3 b1 = p2 + v2U * width;
+        glm::vec3 b2 = p2 + v2U * (width + quadWidth);
+        glm::vec3 d1 = p2 + (-v2U) * width;
+        glm::vec3 d2 = p2 + (-v2U) * (width + quadWidth);
+        
+        glNormal3f(0, 1, 0);
+        // outer track facing up
+        glVertex3f(a1[0], 1, a1[2]);
+        glVertex3f(a2[0], 1, a2[2]);
+        glVertex3f(b2[0], 1, b2[2]);
+        glVertex3f(b1[0], 1, b1[2]);
+
+        // inter track facing up
+        glVertex3f(c1[0], 1, c1[2]);
+        glVertex3f(d1[0], 1, d1[2]);
+        glVertex3f(d2[0], 1, d2[2]);
+        glVertex3f(c2[0], 1, c2[2]);
+
+        glNormal3f(v1U[0], v1U[1], v1U[2]);
+        // outer facing outward
+        glVertex3f(a2[0], 1, a2[2]);
+        glVertex3f(b2[0], 1, b2[2]);
+        glVertex3f(b2[0], 0, b2[2]);
+        glVertex3f(a2[0], 0, a2[2]);
+        // inner facing outward
+        glVertex3f(c1[0], 1, c1[2]);
+        glVertex3f(d1[0], 1, d1[2]);
+        glVertex3f(d1[0], 0, d1[2]);
+        glVertex3f(c1[0], 0, c1[2]);
+
+        glNormal3f(-v1U[0], -v1U[1], -v1U[2]);
+        // outer facing inward
+        glVertex3f(a1[0], 1, a1[2]);
+        glVertex3f(b1[0], 1, b1[2]);
+        glVertex3f(b1[0], 0, b1[2]);
+        glVertex3f(a1[0], 0, a1[2]);
+        // inner facing inward
+        glVertex3f(c2[0], 1, c2[2]);
+        glVertex3f(d2[0], 1, d2[2]);
+        glVertex3f(d2[0], 0, d2[2]);
+        glVertex3f(c2[0], 0, c2[2]);
+    }
+    glEnd();
+}
+
+void sleepers(const int nvert, const float* x, const float* z)
+{
+    float p1x,p1z, p2x,p2z, p3x, p3z;
+    float width = 7;
+    float quadWidth = 3;
+    //    float sleeperWidth = 1.5;
+    float sleeperLength = width * 2;
+    glColor4f(0.5, 0.2, 0.2, 1.0);
+    glBegin(GL_QUADS);
+    for (int i = 0; i < nvert; i += 4)
+    {
+        if (i == nvert - 2)
+        {
+            p1x = x[i]; p1z = z[i];
+            p2x = x[i+1]; p2z = z[i+1];
+            p3x = x[0]; p3z = z[0];
+        } else if (i == nvert - 1)
+        {
+            p1x = x[i]; p1z = z[i];
+            p2x = x[0]; p2z = z[0];
+            p3x = x[1]; p3z = z[1];
+        } else
+        {
+            p1x = x[i]; p1z = z[i];
+            p2x = x[i+1]; p2z = z[i+1];
+            p3x = x[i+2]; p3z = z[i+2];
+        }
+
+        glm::vec3 p1(p1x, 1, p1z);
+        glm::vec3 p1p2(p2x-p1x, 1, p2z-p1z);
+        glm::vec3 p1p2U = glm::normalize(p1p2);
+        glm::vec3 v1(p1p2U[2], 1, -p1p2U[0]);
+        glm::vec3 v1U = glm::normalize(v1);
+        glm::vec3 a1 = p1 + v1U * width;
+        glm::vec3 a2 = p1 + v1U * (width + quadWidth);
+        glm::vec3 c1 = p1 + (-v1U) * width;
+        glm::vec3 c2 = p1 + (-v1U) * (width + quadWidth);
+
+        glm::vec3 p2(p2x, 1, p2z);
+        glm::vec3 p2p3(p3x-p2x, 1, p3z-p2z);
+        glm::vec3 p2p3U = glm::normalize(p2p3);
+        glm::vec3 v2(p2p3U[2], 1, -p2p3U[0]);
+        glm::vec3 v2U = glm::normalize(v2);
+        glm::vec3 b1 = p2 + v2U * width;
+        glm::vec3 b2 = p2 + v2U * (width + quadWidth);
+        glm::vec3 d1 = p2 + (-v2U) * width;
+        glm::vec3 d2 = p2 + (-v2U) * (width + quadWidth);
+        
+        glm::vec3 s1 = p1 + v1U * sleeperLength;
+        glm::vec3 s2 = p2 + v2U * sleeperLength;
+        glm::vec3 s4 = p1 + (-v1U) * sleeperLength;
+        glm::vec3 s3 = p2 + (-v2U) * sleeperLength;
+ 
+        // sleeper
+        glNormal3f(0, 0, 1);
+        glVertex3f(s1[0], 0.1, s1[2]);
+        glVertex3f(s2[0], 0.1, s2[2]);
+        glVertex3f(s3[0], 0.1, s3[2]);
+        glVertex3f(s4[0], 0.1, s4[2]);
     }
     glEnd();
 }
@@ -518,14 +669,14 @@ void slope1(float length, float width, float height)
 
     float buildingbaseHeight = 0.0;
 
-	glColor4f(0.8, 0.8, 0.8, 1.0);
+	glColor4f(0.7, 0.7, 0.7, 1.0);
 
     // glEnable(GL_TEXTURE_2D);
     // glBindTexture(GL_TEXTURE_2D, txId);
     
 	// 3 large polygons (front, back, top)
 	glBegin(GL_QUADS);
-      glNormal3f(0.0, 0.0, 1.0);   //Facing +z (Front side)
+      glNormal3f(0.0, 1.0, 0.0);   //Facing +z (Front side)
     //    glTexCoord2f(0., 0.);
       glVertex3f(-length, buildingbaseHeight, width);
     //    glTexCoord2f(1., 0.);
@@ -535,7 +686,7 @@ void slope1(float length, float width, float height)
     //    glTexCoord2f(0., 87./256.);
       glVertex3f(-length, height, width);
 
-      glNormal3f(0.0, 0.0, -1.0);   //Facing -z (Back side)
+      glNormal3f(0.0, 1.0, 0.0);   //Facing -z (Back side)
     //    glTexCoord2f(0., 0.);
       glVertex3f(length, buildingbaseHeight, -width);
     //    glTexCoord2f(1., 0.);

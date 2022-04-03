@@ -7,13 +7,11 @@
 
 void floor();
 
-void tracks(float, float) ;
+void tracks(const float width, const int nvert, const float* x, const float* z);
 
-void ovalTracks(const int nvert, const float* x, const float* z);
+void sleepers(const int nvert, const float* x, const float* z);
 
 void createTrackMedianLine(const int nvert, const float* x, const float* z);
-
-void eightCurveTracks();
 
 void engine();
 
