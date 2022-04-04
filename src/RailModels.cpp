@@ -16,7 +16,23 @@
 #include <fstream>
 #include <climits>
 #include <math.h>
+#include "loadBMP.h"
 using namespace std;
+
+///////////////////////////////////////////////////////////////////////////////
+//                                TEXTURE LOADER                             //
+///////////////////////////////////////////////////////////////////////////////
+
+GLuint txId;
+void loadTexture()				
+{
+	glGenTextures(1, &txId); 				// Create a Texture object
+	glBindTexture(GL_TEXTURE_2D, txId);		//Use this texture
+    loadBMP("WagonTexture.bmp");
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);	//Set texture parameters
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	
+	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 //                                   FLOOR                                   //
@@ -123,7 +139,7 @@ void tracks(const float width, const int nvert, const float* x, const float* z)
         glm::vec3 b2 = p2 + v2U * (width + quadWidth);
         glm::vec3 d1 = p2 + (-v2U) * width;
         glm::vec3 d2 = p2 + (-v2U) * (width + quadWidth);
-        
+
         glNormal3f(0, 1, 0);
         // outer track facing up
         glVertex3f(a1[0], 1, a1[2]);
@@ -211,12 +227,12 @@ void sleepers(const int nvert, const float* x, const float* z)
         glm::vec3 b2 = p2 + v2U * (width + quadWidth);
         glm::vec3 d1 = p2 + (-v2U) * width;
         glm::vec3 d2 = p2 + (-v2U) * (width + quadWidth);
-        
+
         glm::vec3 s1 = p1 + v1U * sleeperLength;
         glm::vec3 s2 = p2 + v2U * sleeperLength;
         glm::vec3 s4 = p1 + (-v1U) * sleeperLength;
         glm::vec3 s3 = p2 + (-v2U) * sleeperLength;
- 
+
         // sleeper
         glNormal3f(0, 0, 1);
         glVertex3f(s1[0], 0.1, s1[2]);
@@ -291,7 +307,7 @@ void tunnel(const int start, const int length, const int nvert, const float* x, 
         glm::vec3 d2 = p2 + (-v2U) * (width + quadWidth);
         glm::vec3 r3 = d2;
         glm::vec3 h2 = p2 + (-v2U) * (width + basequadWidth);
-        
+
         glNormal3f(0, 1, 0);
         // inner quad facing up
         glVertex3f(a1[0], height, a1[2]);
@@ -312,7 +328,7 @@ void tunnel(const int start, const int length, const int nvert, const float* x, 
         glVertex3f(b2[0], height, b2[2]);
         glVertex3f(f2[0], 0, f2[2]);
         glVertex3f(e2[0], 0, e2[2]);
-        
+
         // outer facing outward
         glVertex3f(c1[0], height, c1[2]);
         glVertex3f(d1[0], height, d1[2]);
@@ -381,7 +397,7 @@ void tunnel(const int start, const int length, const int nvert, const float* x, 
         glVertex3f(r1[0], height+roofHeight, r1[2]);
         glVertex3f(r2[0], height+roofHeight, r2[2]);
         glVertex3f(b2[0], height, b2[2]);
-        glVertex3f(a2[0], height, a2[2]); 
+        glVertex3f(a2[0], height, a2[2]);
     }
     glEnd();
 }
@@ -418,6 +434,18 @@ void base()
 		glPushMatrix();
 		glTranslatef(wx[i], 2.0, wz[i]);
 		gluDisk(q, 0.0, 2.0, 20, 2);
+        glScalef(1, 1, 2);
+        glutSolidCube(0.5);
+		glPopMatrix();
+	}
+
+    	for (int i = 0; i < 4; i++)
+	{
+		glPushMatrix();
+		glTranslatef(wx[i], 2.0, wz[i]+1);
+		gluDisk(q, 0.0, 2.0, 20, 2);
+        glScalef(1, 1, 2);
+        glutSolidCube(0.5);
 		glPopMatrix();
 	}
 }
@@ -466,53 +494,53 @@ void engine()
 
 void wagon()
 {
-   
+
     base();
 
     float wagonLength = 9;
 
 	glColor4f(1.0, 1.0, 1.0, 1.0);
 
-    // glEnable(GL_TEXTURE_2D);
-    // glBindTexture(GL_TEXTURE_2D, txId);
-    
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, txId);
+
 	//3 large polygons (front, back, top)
 	glBegin(GL_QUADS);
     glNormal3f(0.0, 0.0, 1.0);   //Facing +z (Front side)
-    //    glTexCoord2f(0., 0.);
+      glTexCoord2f(0., 0.);
       glVertex3f(-wagonLength, 5.0, 6.0);
-    //    glTexCoord2f(1., 0.);
+      glTexCoord2f(1., 0.);
       glVertex3f(wagonLength, 5.0, 6.0);
-    //    glTexCoord2f(1., 87./256.);
+      glTexCoord2f(1., 87./256.);
       glVertex3f(wagonLength, 17.0, 6.0);
-    //    glTexCoord2f(0., 87./256.);
+      glTexCoord2f(0., 87./256.);
       glVertex3f(-wagonLength, 17.0, 6.0);
 
       glNormal3f(0.0, 0.0, -1.0);   //Facing -z (Back side)
-    //    glTexCoord2f(0., 0.);
+      glTexCoord2f(0., 0.);
       glVertex3f(wagonLength, 5.0, -6.0);
-    //    glTexCoord2f(1., 0.);
+      glTexCoord2f(1., 0.);
       glVertex3f(-wagonLength, 5.0,-6.0);
-    //    glTexCoord2f(1., 87./256.);
+      glTexCoord2f(1., 87./256.);
       glVertex3f(-wagonLength, 17.0,-6.0);
-    //    glTexCoord2f(0., 87./256.);
+      glTexCoord2f(0., 87./256.);
       glVertex3f(wagonLength, 17.0, -6.0);
 
       glNormal3f(0.0, 1.0, 0.0);   //Facing +y (Top side)
-    // glTexCoord2f(0., 115./256.);
+      glTexCoord2f(0., 115./256.);
       glVertex3f(-wagonLength  , 17.0, 6.0);
-    // glTexCoord2f(1., 115./256.);
+      glTexCoord2f(1., 115./256.);
       glVertex3f(wagonLength  , 17.0,  6.0);
-    // glTexCoord2f(1., 212./256.);
+      glTexCoord2f(1., 212./256.);
       glVertex3f(wagonLength, 17.0, -6.0);
-    // glTexCoord2f(0., 212./256.);
+      glTexCoord2f(0., 212./256.);
       glVertex3f(-wagonLength, 17.0, -6.0);
 	glEnd();
 
 	// 2 small side polygons (left, right)
-    // glDisable(GL_TEXTURE_2D);
-    
-	glColor4f(0.5, 0.5, 0.0, 1.0);
+    glDisable(GL_TEXTURE_2D);
+
+	glColor4f(0.3, 0.3, 0.3, 1.0);
 	glBegin(GL_QUADS);
       glNormal3f(-1.0, 0.0, 0.0);   //Facing -x (Left side)
 	  glVertex3f(-wagonLength, 5.0, -6.0);
@@ -555,14 +583,14 @@ void railwayStation()
     glRotatef(90, 0, 1, 0);
     roof(30, 10, 20);
     glPopMatrix();
-    
+
     // // building-1 shade cover
     glPushMatrix();
     glTranslatef(10.0, 36.8, 40.0);
     glRotatef(-90, 0, 1, 0);
     slope2(30, 20, 2);
     glPopMatrix();
-    
+
     // // building-1 shade cover sticks
     glPushMatrix();
     glTranslatef(10, 30, 68);
@@ -600,7 +628,7 @@ void blockBase(float length, float width, float height)
 
     // glEnable(GL_TEXTURE_2D);
     // glBindTexture(GL_TEXTURE_2D, txId);
-    
+
 	// 3 large polygons (front, back, top)
 	glBegin(GL_QUADS);
       glNormal3f(0.0, 0.0, 1.0);   //Facing +z (Front side)
@@ -660,7 +688,7 @@ void block1(float length, float width, float height)
 
     // glEnable(GL_TEXTURE_2D);
     // glBindTexture(GL_TEXTURE_2D, txId);
-    
+
 	// 3 large polygons (front, back, top)
 	glBegin(GL_QUADS);
       glNormal3f(0.0, 0.0, 1.0);   //Facing +z (Front side)
@@ -720,7 +748,7 @@ void block2(float length, float width, float height)
 
     // glEnable(GL_TEXTURE_2D);
     // glBindTexture(GL_TEXTURE_2D, txId);
-    
+
 	// 3 large polygons (front, back, top)
 	glBegin(GL_QUADS);
       glNormal3f(0.0, 0.0, 1.0);   //Facing +z (Front side)
@@ -781,7 +809,7 @@ void slope1(float length, float width, float height)
 
     // glEnable(GL_TEXTURE_2D);
     // glBindTexture(GL_TEXTURE_2D, txId);
-    
+
 	// 3 large polygons (front, back, top)
 	glBegin(GL_QUADS);
       glNormal3f(0.0, 1.0, 0.0);   //Facing +z (Front side)
@@ -840,7 +868,7 @@ void slope2(float length, float width, float height)
 
     // glEnable(GL_TEXTURE_2D);
     // glBindTexture(GL_TEXTURE_2D, txId);
-    
+
 	// 3 large polygons (front, back, top)
 	glBegin(GL_QUADS);
       glNormal3f(0.0, 0.0, 1.0);   //Facing +z (Front side)
@@ -898,7 +926,7 @@ void roof(float length, float width, float height)
 
     // glEnable(GL_TEXTURE_2D);
     // glBindTexture(GL_TEXTURE_2D, txId);
-    
+
 	// 3 large polygons (front, back, top)
 	glBegin(GL_QUADS);
       glNormal3f(0.0, 0.0, 1.0);   //Facing +z (Front top side)
@@ -965,9 +993,9 @@ void signalLights(int timer)
         ((timer > 240) && (timer <= 260)) ||
         ((timer >280) && (timer <= 300)))
     {
-        glColor4f(0.3, 1, 0.1, 1.0);        
+        glColor4f(0.3, 1, 0.1, 1.0);
     } else {
-        glColor4f(1, 0, 0, 1.0);        
+        glColor4f(1, 0, 0, 1.0);
     }
     glTranslatef(0.0, 25.0, -0.7);
     gluDisk(q, 0.0, 2.0, 20,2);
@@ -984,9 +1012,9 @@ void signalLights(int timer)
         ((timer > 240) && (timer <= 260)) ||
         ((timer >280) && (timer <= 300)))
     {
-        glColor4f(0.3, 1, 0.1, 1.0);        
+        glColor4f(0.3, 1, 0.1, 1.0);
     } else {
-        glColor4f(0.9, 1.0, 0.1, 1.0);        
+        glColor4f(0.9, 1.0, 0.1, 1.0);
     }
     glTranslatef(0.0, 20.0, -0.7);
     gluDisk(q, 0.0, 2.0, 20,2);
@@ -1002,9 +1030,9 @@ void signalLights(int timer)
         ((timer > 200) && (timer <= 220)) ||
         ((timer > 240) && (timer <= 260)) ||
         ((timer >280) && (timer <= 300))) {
-        glColor4f(0.3, 1.0, 0.1, 1.0);        
+        glColor4f(0.3, 1.0, 0.1, 1.0);
     } else {
-        glColor4f(0.1, 0.0, 0.3, 1.0);        
+        glColor4f(0.1, 0.0, 0.3, 1.0);
     }
     glTranslatef(0.0, 15.0, -0.7);
     gluDisk(q, 0.0, 2.0, 20,2);
@@ -1015,7 +1043,7 @@ void signalLights(int timer)
     glColor4f(0.0, 0.2, 0.2, 1.0);
     glTranslatef(0.0, 0.0, -2);
     glScalef(1, 60, 1);
-    glutSolidCube(1.0); 
+    glutSolidCube(1.0);
     glPopMatrix();
 
     // lights box
@@ -1023,7 +1051,7 @@ void signalLights(int timer)
     glColor4f(0.2, 0.2, 0.2, 1.0);
     glTranslatef(0.0, 20.0, -2);
     glScalef(5.5, 15.5, 2.5);
-    glutSolidCube(1.0); 
+    glutSolidCube(1.0);
     glPopMatrix();
 }
 
@@ -1033,7 +1061,7 @@ void signalLights(int timer)
 void airPlane(int timer)
 {
     // wings
-    glNormal3f(0.0, 1.0, 0.0);   
+    glNormal3f(0.0, 1.0, 0.0);
     glColor4f(0.8, 0.8, 0.0, 1.0);
     glPushMatrix();
       glTranslatef(-4.0, 9.5, 0.0);
@@ -1071,9 +1099,9 @@ void airPlane(int timer)
           ((timer > 200) && (timer <= 220)) ||
           ((timer > 240) && (timer <= 260)) ||
           ((timer >280) && (timer <= 300))) {
-          glColor4f(0.3, 1.0, 0.1, 1.0);        
+          glColor4f(0.3, 1.0, 0.1, 1.0);
       } else {
-          glColor4f(0.1, 0.0, 0.3, 1.0);        
+          glColor4f(0.1, 0.0, 0.3, 1.0);
       }
       glTranslatef(0.2, 0.2, 0.1);
       gluDisk(q, 0.0, 1.0, 20,2);  //headlight!

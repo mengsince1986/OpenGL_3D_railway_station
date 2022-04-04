@@ -36,3 +36,5 @@ void roof(float length, float width, float height);
 void signalLights(int timer);
 
 void airPlane(int timer);
+
+void loadTexture();

@@ -174,6 +174,8 @@ void initialize(void)
     float grey[4] = {0.2, 0.2, 0.2, 1.0};
     float white[4]  = {1.0, 1.0, 1.0, 1.0};
 
+    // Texturing
+    loadTexture();  
     // Lighting Config
 	glEnable(GL_LIGHTING);
     // // Create a lighting source GL_LIGHT0
