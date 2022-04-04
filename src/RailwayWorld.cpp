@@ -175,7 +175,8 @@ void initialize(void)
     float white[4]  = {1.0, 1.0, 1.0, 1.0};
 
     // Texturing
-    loadTexture();  
+    loadWagonTexture();
+    loadRoofTexture();
     // Lighting Config
 	glEnable(GL_LIGHTING);
     // // Create a lighting source GL_LIGHT0

@@ -23,16 +23,30 @@ using namespace std;
 //                                TEXTURE LOADER                             //
 ///////////////////////////////////////////////////////////////////////////////
 
-GLuint txId;
-void loadTexture()				
+GLuint txWagon;
+GLuint txRoof;
+void loadWagonTexture()				
 {
-	glGenTextures(1, &txId); 				// Create a Texture object
-	glBindTexture(GL_TEXTURE_2D, txId);		//Use this texture
+	glGenTextures(1, &txWagon); 				// Create a Texture object
+	glBindTexture(GL_TEXTURE_2D, txWagon);		//Use this texture
     loadBMP("WagonTexture.bmp");
+    
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);	//Set texture parameters
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	
 	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 }
+
+void loadRoofTexture()				
+{
+    glGenTextures(1, &txRoof); 				// Create a Texture object
+	glBindTexture(GL_TEXTURE_2D, txRoof);		//Use this texture
+    loadBMP("roofTexture.bmp");
+    
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);	//Set texture parameters
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	
+	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////
 //                                   FLOOR                                   //
@@ -50,8 +64,6 @@ void floor()
     // by temporaily setting the specular colour to
     glMaterialfv(GL_FRONT, GL_SPECULAR, black);
 
-	// The floor is made up of several tiny squares on a 400 x 400 grid.
-    // Each square has a unit size.
     // // set floor size to be 1000 x 1000
     int floorSize = 300;
 	glBegin(GL_QUADS);
@@ -502,7 +514,7 @@ void wagon()
 	glColor4f(1.0, 1.0, 1.0, 1.0);
 
     glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, txId);
+    glBindTexture(GL_TEXTURE_2D, txWagon);
 
 	//3 large polygons (front, back, top)
 	glBegin(GL_QUADS);
@@ -627,7 +639,7 @@ void blockBase(float length, float width, float height)
 	glColor4f(0.8, 0.8, 0.8, 1.0);
 
     // glEnable(GL_TEXTURE_2D);
-    // glBindTexture(GL_TEXTURE_2D, txId);
+    // glBindTexture(GL_TEXTURE_2D, txWagon);
 
 	// 3 large polygons (front, back, top)
 	glBegin(GL_QUADS);
@@ -687,7 +699,7 @@ void block1(float length, float width, float height)
 	glColor4f(0.2, 0.3, 0.3, 1.0);
 
     // glEnable(GL_TEXTURE_2D);
-    // glBindTexture(GL_TEXTURE_2D, txId);
+    // glBindTexture(GL_TEXTURE_2D, txWagon);
 
 	// 3 large polygons (front, back, top)
 	glBegin(GL_QUADS);
@@ -747,7 +759,7 @@ void block2(float length, float width, float height)
 	glColor4f(0.2, 0.3, 0.3, 1.0);
 
     // glEnable(GL_TEXTURE_2D);
-    // glBindTexture(GL_TEXTURE_2D, txId);
+    // glBindTexture(GL_TEXTURE_2D, txWagon);
 
 	// 3 large polygons (front, back, top)
 	glBegin(GL_QUADS);
@@ -808,7 +820,7 @@ void slope1(float length, float width, float height)
 	glColor4f(0.7, 0.7, 0.7, 1.0);
 
     // glEnable(GL_TEXTURE_2D);
-    // glBindTexture(GL_TEXTURE_2D, txId);
+    // glBindTexture(GL_TEXTURE_2D, txWagon);
 
 	// 3 large polygons (front, back, top)
 	glBegin(GL_QUADS);
@@ -867,7 +879,7 @@ void slope2(float length, float width, float height)
 	glColor4f(0.4, 0.3, 0.2, 1.0);
 
     // glEnable(GL_TEXTURE_2D);
-    // glBindTexture(GL_TEXTURE_2D, txId);
+    // glBindTexture(GL_TEXTURE_2D, txWagon);
 
 	// 3 large polygons (front, back, top)
 	glBegin(GL_QUADS);
@@ -924,29 +936,29 @@ void roof(float length, float width, float height)
 
 	glColor4f(0.5, 0.2, 0.2, 1.0);
 
-    // glEnable(GL_TEXTURE_2D);
-    // glBindTexture(GL_TEXTURE_2D, txId);
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, txRoof);
 
 	// 3 large polygons (front, back, top)
 	glBegin(GL_QUADS);
       glNormal3f(0.0, 0.0, 1.0);   //Facing +z (Front top side)
-    //    glTexCoord2f(0., 0.);
+      glTexCoord2f(0., 0.);
       glVertex3f(-length, buildingbaseHeight, width);
-    //    glTexCoord2f(1., 0.);
+      glTexCoord2f(1., 0.);
       glVertex3f(length, buildingbaseHeight, width);
-    //    glTexCoord2f(1., 87./256.);
+      glTexCoord2f(1., 87./256.);
       glVertex3f(length, height, 0);
-    //    glTexCoord2f(0., 87./256.);
+      glTexCoord2f(0., 87./256.);
       glVertex3f(-length, height, 0);
 
       glNormal3f(0.0, 0.0, -1.0);   //Facing -z (Back top side)
-    //    glTexCoord2f(0., 0.);
+      glTexCoord2f(0., 0.);
       glVertex3f(length, buildingbaseHeight, -width);
-    //    glTexCoord2f(1., 0.);
+      glTexCoord2f(1., 0.);
       glVertex3f(-length, buildingbaseHeight,-width);
-    //    glTexCoord2f(1., 87./256.);
+      glTexCoord2f(1., 87./256.);
       glVertex3f(-length, height, 0);
-    //    glTexCoord2f(0., 87./256.);
+      glTexCoord2f(0., 87./256.);
       glVertex3f(length, height, 0);
 
       glNormal3f(0.0, 1.0, 0.0);   //Facing +y (bottom side)
@@ -961,7 +973,7 @@ void roof(float length, float width, float height)
 	glEnd();
 
 	// 2 small side triangles (left, right)
-    // glDisable(GL_TEXTURE_2D);
+    glDisable(GL_TEXTURE_2D);
 	glColor4f(0.5, 0.2, 0.1, 1.0);
 	glBegin(GL_TRIANGLES);
       glNormal3f(-1.0, 0.0, 0.0);   //Facing -x (Left side)

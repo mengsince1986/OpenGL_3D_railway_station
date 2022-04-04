@@ -37,4 +37,6 @@ void signalLights(int timer);
 
 void airPlane(int timer);
 
-void loadTexture();
+void loadWagonTexture();
+
+void loadRoofTexture();
