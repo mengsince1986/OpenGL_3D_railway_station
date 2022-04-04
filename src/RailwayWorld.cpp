@@ -153,7 +153,8 @@ void initialize(void)
     // Lighting Config
 	glEnable(GL_LIGHTING);
     // // Create a lighting source GL_LIGHT0
-	glEnable(GL_LIGHT0);
+    glEnable(GL_LIGHT0);
+    // glDisable(GL_LIGHT0);
     // // Create a lighting source GL_LIGHT1
     glEnable(GL_LIGHT1);
 
@@ -205,11 +206,16 @@ void display(void)
    // Create floor
    floor();
 
-   // Create tack median line
+   // Create track median line
    glPushMatrix();
    //   createTrackMedianLine(nvert, posX, posZ);
    tracks(7, nvert, posX, posZ);
    sleepers(nvert, posX, posZ);
+   glPopMatrix();
+
+   // Create tunnel
+   glPushMatrix();
+   tunnel(20, 105, nvert, posX, posZ);
    glPopMatrix();
 
    // Create engine (locomotive) moving around tracks

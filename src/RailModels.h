@@ -11,6 +11,8 @@ void tracks(const float width, const int nvert, const float* x, const float* z);
 
 void sleepers(const int nvert, const float* x, const float* z);
 
+void tunnel(const int start, const int length, const int nvert, const float* x, const float* z);
+
 void createTrackMedianLine(const int nvert, const float* x, const float* z);
 
 void engine();
