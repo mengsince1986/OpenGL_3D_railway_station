@@ -410,7 +410,7 @@ void base()
 	//x, z positions of wheels:
 	float wx[4] = {  -8,   8,   -8,    8 };
 	float wz[4] = { 5.1, 5.1, -5.1, -5.1 };
-    glColor4f(0.5, 0., 0., 1.0);    //Wheel color
+    glColor4f(0.4, 0.0, 0.1, 1.0);    //Wheel color
 	GLUquadric *q = gluNewQuadric();   //Disc
 
 	for (int i = 0; i < 4; i++)
@@ -431,7 +431,7 @@ void engine()
     base();
 
     //Cab
-    glColor4f(0.8, 0.8, 0.0, 1.0);
+    glColor4f(0.2, 0.4, 0.3, 1.0);
     glPushMatrix();
       glTranslatef(7.0, 8.5, 0.0);
       glScalef(6.0, 7.0, 10.0);
@@ -447,7 +447,7 @@ void engine()
     //Boiler
 	GLUquadric *q = gluNewQuadric();   //Cylinder
     glPushMatrix();
-      glColor4f(0.5, 0., 0., 1.0);
+      glColor4f(0.2, 0.2, 0.2, 1.0);
       glTranslatef(4.0, 10.0, 0.0);
       glRotatef(-90.0, 0., 1., 0.);
       gluCylinder(q, 5.0, 5.0, 14.0, 20, 5);

@@ -25,6 +25,7 @@ using namespace std;
 // Train moving index
 int THETA = 0;
 int lightTimer = 0;
+int airPlaneTheta = 0;
 // Train current postion
 float icurrX;
 float icurrZ;
@@ -36,7 +37,7 @@ int trainStopZ = 40;
 string cameraMode = "default";
 float angle = 0.0;
 float eye_x = 3 * sin(angle);
-float eye_y = 250;
+float eye_y = 300;
 float eye_z = 150 + 3 * cos(angle);
 float look_x = eye_x + 100 * sin(angle);
 float look_y = 0.0;
@@ -102,6 +103,8 @@ void myTimer(int value)
         lightTimer = 0;
     }
     lightTimer++;
+
+    airPlaneTheta++;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -149,7 +152,7 @@ void special(int key, int x, int y)
     { // Camera back to defaut view
          angle = 0.0;
          eye_x = 3*sin(angle);
-         eye_y = 250;
+         eye_y = 300;
          eye_z = 150 + 3*cos(angle);
          look_x = eye_x + 100*sin(angle);
          look_y = 0.0;
@@ -426,7 +429,8 @@ void display(void)
    glPopMatrix();
 
    glPushMatrix();
-   glTranslatef(0, 70, 0);
+   glRotatef(-airPlaneTheta, -0.2, 1, 0);
+   glTranslatef(0, 70, 80);
    airPlane(lightTimer);
    glPopMatrix();
    
