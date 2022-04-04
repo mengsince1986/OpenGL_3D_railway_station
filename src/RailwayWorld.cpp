@@ -32,6 +32,7 @@ int trainStopPos = 110;
 int trainStopX = 15;
 int trainStopZ = 40;
 // Camera defaut params
+string cameraMode = "default";
 float angle = 0.0;
 float eye_x = 3 * sin(angle);
 float eye_y = 250;
@@ -98,8 +99,22 @@ void myTimer(int value)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-//                             Special Key Events                            //
+//                            Keybord and  Special Key Events                            //
 ///////////////////////////////////////////////////////////////////////////////
+void keyboard(unsigned char key, int x, int y) {
+     if (key == 'c')
+    {
+        if (cameraMode == "default") {
+            cameraMode = "station";
+        } else if (cameraMode == "station") {
+            cameraMode = "driver";
+        } else if (cameraMode == "driver") {
+            cameraMode = "default";
+        }
+    }
+}
+
+
 void special(int key, int x, int y)
 {
 	if(key == GLUT_KEY_LEFT) angle -= 0.05;  //Change direction
@@ -192,6 +207,63 @@ void initialize(void)
 ///////////////////////////////////////////////////////////////////////////////
 void display(void)
 {
+    // // Calculate the moving parameters for the engine
+   // // if THETA reaches the last vertix, wrap to the first one
+   if (THETA >= nvert) {
+       THETA = 0;
+   }
+   float radToDegree = 180 / 3.14159265;
+   icurrX = posX[THETA];
+   icurrZ = posZ[THETA];
+   float dirX, dirZ;
+   float icurrXPlusK;
+   float icurrZPlusK;
+   float icurrXMinusK;
+   float icurrZMinusK;
+   float posAngle;
+   if (posAngleCache[THETA] == -1) {
+       // if no posAngle at this vertix has been cached
+      
+       if (THETA == nvert - 1) {
+           icurrXPlusK = posX[0];
+       } else {
+           icurrXPlusK = posX[THETA + 1];
+       }
+      
+       if (THETA == nvert - 1) {
+           icurrZPlusK = posZ[0];
+       } else {
+           icurrZPlusK = posZ[THETA + 1];
+       }
+      
+       if (THETA == 0) {
+           icurrXMinusK = posX[nvert-1];
+       } else {
+           icurrXMinusK = posX[THETA - 1];
+       }
+      
+       if (THETA == 0) {
+           icurrZMinusK = posZ[nvert-1];
+       } else {
+           icurrZMinusK = posZ[THETA - 1];
+       }
+
+       // get x and y of  moving direction vector
+       dirX = icurrXPlusK - icurrXMinusK;
+       dirZ = icurrZPlusK - icurrZMinusK;
+       // convert moving direction vector to a unit vector
+       glm::vec3 dirV(dirX, 1, dirZ);
+       glm::vec3 dirUv = glm::normalize(dirV);
+       // get the posAngle from the x and z of moving direction vector
+       float uX = dirUv[0];
+       float uZ = dirUv[2];
+       posAngle = atan2(uZ, -uX) * radToDegree;
+       posAngleCache[THETA] = posAngle;
+   } else
+   {   // if posAngle is already cached
+       posAngle = posAngleCache[THETA];
+   }
+    
    // light0 position variable (directly above the origin)
    float lgt_pos[] = {0.0f, 50.0f, 0.0f, 1.0f};
 
@@ -200,8 +272,28 @@ void display(void)
    glLoadIdentity();
 
    // Camera view config
-   gluLookAt(eye_x, eye_y, eye_z,  look_x, look_y, look_z,   0.0, 1.0, 0.0);
-   glLightfv(GL_LIGHT0, GL_POSITION, lgt_pos);   // light0 position
+   if (cameraMode == "driver")
+   {
+       //       glTranslatef(icurrX, 1, icurrZ);
+       //       glRotatef(posAngle, 0, 1, 0);
+       float driverViewX, driverViewZ;
+       if (THETA + 15 > nvert - 1){
+           driverViewX = posX[THETA + 15 - nvert];
+           driverViewZ = posZ[THETA + 15 - nvert];
+       } else {
+           driverViewX = posX[THETA + 15];
+           driverViewZ = posZ[THETA + 15];
+       }
+       gluLookAt(icurrX, 25, icurrZ,  driverViewX, 20, driverViewZ,   0.0, 1.0, 0.0);
+   } else if (cameraMode == "station")
+   {
+       gluLookAt(150, 30, 95,  80, 30, 50,   0.0, 1.0, 0.0);
+   } else if (cameraMode == "default") {
+       gluLookAt(eye_x, eye_y, eye_z,  look_x, look_y, look_z,   0.0, 1.0, 0.0);
+   }
+
+   // Light0 positoin
+   glLightfv(GL_LIGHT0, GL_POSITION, lgt_pos);
 
    // Create floor
    floor();
@@ -219,57 +311,7 @@ void display(void)
    glPopMatrix();
 
    // Create engine (locomotive) moving around tracks
-   // // Calculate the moving parameters for the engine
-   // // if THETA reaches the last vertix, wrap to the first one
-   if (THETA >= nvert) {
-       THETA = 0;
-   }
-   float radToDegree = 180 / 3.14159265;
-   icurrX = posX[THETA];
-   icurrZ = posZ[THETA];
-   float posAngle;
-   if (posAngleCache[THETA] == -1) {
-       // if no posAngle at this vertix has been cached
-       float icurrXPlusK;
-       if (THETA == nvert - 1) {
-           icurrXPlusK = posX[0];
-       } else {
-           icurrXPlusK = posX[THETA + 1];
-       }
-       float icurrZPlusK;
-       if (THETA == nvert - 1) {
-           icurrZPlusK = posZ[0];
-       } else {
-           icurrZPlusK = posZ[THETA + 1];
-       }
-       float icurrXMinusK;
-       if (THETA == 0) {
-           icurrXMinusK = posX[nvert-1];
-       } else {
-           icurrXMinusK = posX[THETA - 1];
-       }
-       float icurrZMinusK;
-       if (THETA == 0) {
-           icurrZMinusK = posZ[nvert-1];
-       } else {
-           icurrZMinusK = posZ[THETA - 1];
-       }
-
-       // get x and y of  moving direction vector
-       float dirX = icurrXPlusK - icurrXMinusK;
-       float dirZ = icurrZPlusK - icurrZMinusK;
-       // convert moving direction vector to a unit vector
-       glm::vec3 dirV(dirX, 1, dirZ);
-       glm::vec3 dirUv = glm::normalize(dirV);
-       // get the posAngle from the x and z of moving direction vector
-       float uX = dirUv[0];
-       float uZ = dirUv[2];
-       posAngle = atan2(uZ, -uX) * radToDegree;
-       posAngleCache[THETA] = posAngle;
-   } else
-   {   // if posAngle is already cached
-       posAngle = posAngleCache[THETA];
-   }
+   
    // //  Create and move the engine
    glPushMatrix();
    glTranslatef(icurrX, 1, icurrZ);
@@ -370,6 +412,8 @@ int main(int argc, char** argv)
    initialize();
 
    glutDisplayFunc(display);
+   // Call keybord
+   glutKeyboardFunc(keyboard);
    // Call special keybord
    glutSpecialFunc(special);
    // Call the timer

@@ -26,7 +26,7 @@ void floor()
 {
 	float white[4] = {1., 1., 1., 1.};
 	float black[4] = {0};
-	glColor4f(0.4, 0.4, 0.4, 1.0);  //The floor is gray in colour
+	glColor4f(0.2, 0.2, 0.2, 1.0);  //The floor is gray in colour
 	glNormal3f(0.0, 1.0, 0.0);
 
     // lab02.3 Mkae floors diffuse surfaces.
@@ -37,7 +37,7 @@ void floor()
 	// The floor is made up of several tiny squares on a 400 x 400 grid.
     // Each square has a unit size.
     // // set floor size to be 1000 x 1000
-    int floorSize = 200;
+    int floorSize = 300;
 	glBegin(GL_QUADS);
 	for(int i = -floorSize; i < floorSize; i++)
 	{
@@ -67,57 +67,6 @@ void floor()
 ///////////////////////////////////////////////////////////////////////////////
 //                               Railway Tracks                              //
 ///////////////////////////////////////////////////////////////////////////////
-/*
-void tracks(float medRadius, float width)
-{
-	float inRad  = medRadius - width * 0.5;
-	float outRad = medRadius + width * 0.5;
-	float angle1,angle2, ca1,sa1, ca2,sa2;
-	float x1,z1, x2,z2, x3,z3, x4,z4;  //four points of a quad
-    float toRad = 3.14159265/180.0;  //Conversion from degrees to radians
-
-	glColor4f(0.0, 0.0, 0.3, 1.0);
-    glBegin(GL_QUADS);
-	float radius = inRad;
-	for (int i = 0; i < 2; i++)   //Two parallel tracks (radius = inRad, outRad)
-	{
-		for (int i = 0; i < 360; i += 5)    //5 deg intervals
-		{
-			angle1 = i * toRad;       //Computation of angles, cos, sin etc
-			angle2 = (i + 5) * toRad;
-			ca1 = cos(angle1); ca2 = cos(angle2);
-			sa1 = sin(angle1); sa2 = sin(angle2);
-			x1 = (radius - 0.5)*sa1; z1 = (radius - 0.5)*ca1;
-			x2 = (radius + 0.5)*sa1; z2 = (radius + 0.5)*ca1;
-			x3 = (radius + 0.5)*sa2; z3 = (radius + 0.5)*ca2;
-			x4 = (radius - 0.5)*sa2; z4 = (radius - 0.5)*ca2;
-
-			glNormal3f(0., 1., 0.);       //Quad 1 facing up
-			glVertex3f(x1, 1.0, z1);
-			glVertex3f(x2, 1.0, z2);
-			glVertex3f(x3, 1.0, z3);
-			glVertex3f(x4, 1.0, z4);
-
-			glNormal3f(-sa1, 0.0, -ca1);   //Quad 2 facing inward
-			glVertex3f(x1, 0.0, z1);
-			glVertex3f(x1, 1.0, z1);
-			glNormal3f(-sa2, 0.0, -ca2);
-			glVertex3f(x4, 1.0, z4);
-			glVertex3f(x4, 0.0, z4);
-
-			glNormal3f(sa1, 0.0, ca1);   //Quad 3 facing outward
-			glVertex3f(x2, 1.0, z2);
-			glVertex3f(x2, 0.0, z2);
-			glNormal3f(sa2, 0.0, ca2);
-			glVertex3f(x3, 0.0, z3);
-			glVertex3f(x3, 1.0, z3);
-		}
-		radius = outRad;
-	}
-	glEnd();
-}
-*/
-
 void createTrackMedianLine(const int nvert, const float* x, const float* z)
 {
     glColor4f(0.0, 1.0, 1.0, 1.0);
@@ -290,7 +239,7 @@ void tunnel(const int start, const int length, const int nvert, const float* x, 
     float basequadWidth = 30;
     float height = 25;
     float roofHeight = 5;
-    glColor4f(0.1, 0.0, 0.5, 1.0);
+    glColor4f(0.2, 0.3, 0.6, 1.0);
     glBegin(GL_QUADS);
     for (int i = start; i < start+length; i++)
     {
@@ -344,7 +293,7 @@ void tunnel(const int start, const int length, const int nvert, const float* x, 
         glm::vec3 h2 = p2 + (-v2U) * (width + basequadWidth);
         
         glNormal3f(0, 1, 0);
-        // inner track facing up
+        // inner quad facing up
         glVertex3f(a1[0], height, a1[2]);
         glVertex3f(a2[0], height, a2[2]);
         glVertex3f(b2[0], height, b2[2]);
@@ -356,21 +305,20 @@ void tunnel(const int start, const int length, const int nvert, const float* x, 
         glVertex3f(d2[0], height, d2[2]);
         glVertex3f(c2[0], height, c2[2]);
 
-        glNormal3f(v1U[0], 1, v1U[2]);
-        // inner facing outward to be debugged 
+        //        glNormal3f(v1U[0], 1, v1U[2]);
+        glNormal3f(0, 0, 0);
+        // inner facing outward
         glVertex3f(a2[0], height, a2[2]);
         glVertex3f(b2[0], height, b2[2]);
         glVertex3f(f2[0], 0, f2[2]);
         glVertex3f(e2[0], 0, e2[2]);
         
-        glNormal3f(v1U[0], v1U[1], v1U[2]);
         // outer facing outward
         glVertex3f(c1[0], height, c1[2]);
         glVertex3f(d1[0], height, d1[2]);
         glVertex3f(h1[0], 0, h1[2]);
         glVertex3f(g1[0], 0, g1[2]);
 
-        glNormal3f(-v1U[0], -v1U[1], -v1U[2]);
         // inner facing inward
         glVertex3f(a1[0], height, a1[2]);
         glVertex3f(b1[0], height, b1[2]);
@@ -383,7 +331,7 @@ void tunnel(const int start, const int length, const int nvert, const float* x, 
         glVertex3f(g2[0], 0, g2[2]);
 
         // inner vertical quads
-        glNormal3f(1, 0, 0);
+        glNormal3f(1, 0, 1);
         glVertex3f(a1[0], height, a1[2]);
         glVertex3f(a2[0], height, a2[2]);
         glVertex3f(e2[0], 0, e2[2]);
