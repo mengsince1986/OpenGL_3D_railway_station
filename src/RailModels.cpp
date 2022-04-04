@@ -951,39 +951,62 @@ void roof(float length, float width, float height)
 ///////////////////////////////////////////////////////////////////////////////
 //                              Signaling Lights                             //
 ///////////////////////////////////////////////////////////////////////////////
-void signalLights(float timer)
+void signalLights(int timer)
 {
     // lights-1
 	GLUquadric *q = gluNewQuadric();   //Cylinder
     glPushMatrix();
-    if (((timer > 50) && (timer < 100)) || ((timer > 150) && (timer < 200))) {
+    if ((timer <= 20) ||
+        ((timer > 40) && (timer <= 60)) ||
+        ((timer > 80) && (timer <= 100)) ||
+        ((timer > 120) && (timer <= 140)) ||
+        ((timer > 160) && (timer <= 180)) ||
+        ((timer > 200) && (timer <= 220)) ||
+        ((timer > 240) && (timer <= 260)) ||
+        ((timer >280) && (timer <= 300)))
+    {
         glColor4f(0.3, 1, 0.1, 1.0);        
     } else {
         glColor4f(1, 0, 0, 1.0);        
     }
-    glTranslatef(0.0, 25.0, 0.2);
+    glTranslatef(0.0, 25.0, -0.7);
     gluDisk(q, 0.0, 2.0, 20,2);
     glPopMatrix();
 
     // lights-2
     glPushMatrix();
-    if (((timer > 50) && (timer < 100)) || ((timer > 150) && (timer < 200))) {
+    if ((timer <= 20) ||
+        ((timer > 40) && (timer <= 60)) ||
+        ((timer > 80) && (timer <= 100)) ||
+        ((timer > 120) && (timer <= 140)) ||
+        ((timer > 160) && (timer <= 180)) ||
+        ((timer > 200) && (timer <= 220)) ||
+        ((timer > 240) && (timer <= 260)) ||
+        ((timer >280) && (timer <= 300)))
+    {
         glColor4f(0.3, 1, 0.1, 1.0);        
     } else {
-        glColor4f(1, 0, 0, 1.0);        
+        glColor4f(0.9, 1.0, 0.1, 1.0);        
     }
-    glTranslatef(0.0, 20.0, 0.2);
+    glTranslatef(0.0, 20.0, -0.7);
     gluDisk(q, 0.0, 2.0, 20,2);
     glPopMatrix();
 
     // lights-3
     glPushMatrix();
-    if (((timer > 50) && (timer < 100)) || ((timer > 150) && (timer < 200))) {
-        glColor4f(0.3, 1, 0.1, 1.0);        
+    if ((timer <= 20) ||
+        ((timer > 40) && (timer <= 60)) ||
+        ((timer > 80) && (timer <= 100)) ||
+        ((timer > 120) && (timer <= 140)) ||
+        ((timer > 160) && (timer <= 180)) ||
+        ((timer > 200) && (timer <= 220)) ||
+        ((timer > 240) && (timer <= 260)) ||
+        ((timer >280) && (timer <= 300))) {
+        glColor4f(0.3, 1.0, 0.1, 1.0);        
     } else {
-        glColor4f(1, 0, 0, 1.0);        
+        glColor4f(0.1, 0.0, 0.3, 1.0);        
     }
-    glTranslatef(0.0, 15.0, 0.2);
+    glTranslatef(0.0, 15.0, -0.7);
     gluDisk(q, 0.0, 2.0, 20,2);
     glPopMatrix();
 
@@ -1002,4 +1025,58 @@ void signalLights(float timer)
     glScalef(5.5, 15.5, 2.5);
     glutSolidCube(1.0); 
     glPopMatrix();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+//                                 Air Plane                                 //
+///////////////////////////////////////////////////////////////////////////////
+void airPlane(int timer)
+{
+    // wings
+    glNormal3f(0.0, 1.0, 0.0);   
+    glColor4f(0.8, 0.8, 0.0, 1.0);
+    glPushMatrix();
+      glTranslatef(-4.0, 9.5, 0.0);
+      glScalef(4.0, 1.0, 35.0);
+      glutSolidCube(1.0);
+    glPopMatrix();
+
+    glPushMatrix();
+      glTranslatef(6.0, 9.5, 0.0);
+      glScalef(4.0, 1.0, 15.0);
+      glutSolidCube(1.0);
+    glPopMatrix();
+
+    glColor4f(0.4, 0.4, 0.4, 1.0);
+    glPushMatrix();
+      glTranslatef(6.0, 14.0, 0.0);
+      glScalef(4.0, 8.0, 1.0);
+      glutSolidCube(1.0);
+    glPopMatrix();
+
+    //Boiler
+	GLUquadric *q = gluNewQuadric();   //Cylinder
+    glPushMatrix();
+      glColor4f(0.5, 0., 0., 1.0);
+      glTranslatef(4.0, 10.0, 0.0);
+      glRotatef(-90.0, 0., 1., 0.);
+      gluCylinder(q, 4.0, 2.0, 14.0, 30, 5);
+      glTranslatef(0.0, 0.0, 14.0);
+      gluDisk(q, 0.0, 2.0, 20, 3);
+      if ((timer <= 20) ||
+          ((timer > 40) && (timer <= 60)) ||
+          ((timer > 80) && (timer <= 100)) ||
+          ((timer > 120) && (timer <= 140)) ||
+          ((timer > 160) && (timer <= 180)) ||
+          ((timer > 200) && (timer <= 220)) ||
+          ((timer > 240) && (timer <= 260)) ||
+          ((timer >280) && (timer <= 300))) {
+          glColor4f(0.3, 1.0, 0.1, 1.0);        
+      } else {
+          glColor4f(0.1, 0.0, 0.3, 1.0);        
+      }
+      glTranslatef(0.2, 0.2, 0.1);
+      gluDisk(q, 0.0, 1.0, 20,2);  //headlight!
+    glPopMatrix();
+
 }

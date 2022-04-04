@@ -33,4 +33,6 @@ void slope2(float length, float width, float height);
 
 void roof(float length, float width, float height);
 
-void signalLights(float timer);
+void signalLights(int timer);
+
+void airPlane(int timer);

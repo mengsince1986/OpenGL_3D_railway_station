@@ -24,6 +24,7 @@ using namespace std;
 ///////////////////////////////////////////////////////////////////////////////
 // Train moving index
 int THETA = 0;
+int lightTimer = 0;
 // Train current postion
 float icurrX;
 float icurrZ;
@@ -96,6 +97,11 @@ void myTimer(int value)
         glutPostRedisplay();
         glutTimerFunc(50, myTimer, 0);
     }
+
+    if (lightTimer > 300) {
+        lightTimer = 0;
+    }
+    lightTimer++;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -398,9 +404,32 @@ void display(void)
 
    // Create signalLights
    glPushMatrix();
-   signalLights(THETA);
+   glTranslatef(-10, 0, -18);
+   glRotatef(90, 0, 1, 0);
+   signalLights(lightTimer);
    glPopMatrix();
 
+   glPushMatrix();
+   glTranslatef(-10, 0, -60);
+   glRotatef(90, 0, 1, 0);
+   signalLights(lightTimer);
+   glPopMatrix();
+
+   glPushMatrix();
+   glTranslatef(-80, 0, 10);
+   signalLights(lightTimer);
+   glPopMatrix();
+
+   glPushMatrix();
+   glTranslatef(-117, 0, 12);
+   signalLights(lightTimer);
+   glPopMatrix();
+
+   glPushMatrix();
+   glTranslatef(0, 70, 0);
+   airPlane(lightTimer);
+   glPopMatrix();
+   
    glutSwapBuffers();   //Useful for animation
 }
 
