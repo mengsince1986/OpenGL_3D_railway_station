@@ -177,6 +177,9 @@ void initialize(void)
     // Texturing
     loadWagonTexture();
     loadRoofTexture();
+    loadShadeTexture();
+    loadConcreteTexture();
+    loadHouseFrontTexture();
     // Lighting Config
 	glEnable(GL_LIGHTING);
     // // Create a lighting source GL_LIGHT0

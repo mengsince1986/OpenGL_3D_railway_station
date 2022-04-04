@@ -40,3 +40,9 @@ void airPlane(int timer);
 void loadWagonTexture();
 
 void loadRoofTexture();
+
+void loadShadeTexture();
+
+void loadConcreteTexture();
+
+void loadHouseFrontTexture();
