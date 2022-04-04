@@ -396,6 +396,11 @@ void display(void)
    railwayStation();
    glPopMatrix();
 
+   // Create signalLights
+   glPushMatrix();
+   signalLights(THETA);
+   glPopMatrix();
+
    glutSwapBuffers();   //Useful for animation
 }
 

@@ -947,3 +947,59 @@ void roof(float length, float width, float height)
 	  glVertex3f(length, height, 0);
 	glEnd();
 }
+
+///////////////////////////////////////////////////////////////////////////////
+//                              Signaling Lights                             //
+///////////////////////////////////////////////////////////////////////////////
+void signalLights(float timer)
+{
+    // lights-1
+	GLUquadric *q = gluNewQuadric();   //Cylinder
+    glPushMatrix();
+    if (((timer > 50) && (timer < 100)) || ((timer > 150) && (timer < 200))) {
+        glColor4f(0.3, 1, 0.1, 1.0);        
+    } else {
+        glColor4f(1, 0, 0, 1.0);        
+    }
+    glTranslatef(0.0, 25.0, 0.2);
+    gluDisk(q, 0.0, 2.0, 20,2);
+    glPopMatrix();
+
+    // lights-2
+    glPushMatrix();
+    if (((timer > 50) && (timer < 100)) || ((timer > 150) && (timer < 200))) {
+        glColor4f(0.3, 1, 0.1, 1.0);        
+    } else {
+        glColor4f(1, 0, 0, 1.0);        
+    }
+    glTranslatef(0.0, 20.0, 0.2);
+    gluDisk(q, 0.0, 2.0, 20,2);
+    glPopMatrix();
+
+    // lights-3
+    glPushMatrix();
+    if (((timer > 50) && (timer < 100)) || ((timer > 150) && (timer < 200))) {
+        glColor4f(0.3, 1, 0.1, 1.0);        
+    } else {
+        glColor4f(1, 0, 0, 1.0);        
+    }
+    glTranslatef(0.0, 15.0, 0.2);
+    gluDisk(q, 0.0, 2.0, 20,2);
+    glPopMatrix();
+
+    // lights pols
+    glPushMatrix();
+    glColor4f(0.0, 0.2, 0.2, 1.0);
+    glTranslatef(0.0, 0.0, -2);
+    glScalef(1, 60, 1);
+    glutSolidCube(1.0); 
+    glPopMatrix();
+
+    // lights box
+    glPushMatrix();
+    glColor4f(0.2, 0.2, 0.2, 1.0);
+    glTranslatef(0.0, 20.0, -2);
+    glScalef(5.5, 15.5, 2.5);
+    glutSolidCube(1.0); 
+    glPopMatrix();
+}
