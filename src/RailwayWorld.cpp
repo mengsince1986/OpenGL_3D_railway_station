@@ -238,25 +238,25 @@ void display(void)
    float posAngle;
    if (posAngleCache[THETA] == -1) {
        // if no posAngle at this vertix has been cached
-      
+
        if (THETA == nvert - 1) {
            icurrXPlusK = posX[0];
        } else {
            icurrXPlusK = posX[THETA + 1];
        }
-      
+
        if (THETA == nvert - 1) {
            icurrZPlusK = posZ[0];
        } else {
            icurrZPlusK = posZ[THETA + 1];
        }
-      
+
        if (THETA == 0) {
            icurrXMinusK = posX[nvert-1];
        } else {
            icurrXMinusK = posX[THETA - 1];
        }
-      
+
        if (THETA == 0) {
            icurrZMinusK = posZ[nvert-1];
        } else {
@@ -278,7 +278,7 @@ void display(void)
    {   // if posAngle is already cached
        posAngle = posAngleCache[THETA];
    }
-    
+
    // light0 position variable (directly above the origin)
    //   float lgt_pos[] = {0.0f, 50.0f, 0.0f, 1.0f};
    float lgt_pos[] = {0.0f, 100.0f, 50.0f, 1.0f};
@@ -316,7 +316,7 @@ void display(void)
 
    // Create track median line
    glPushMatrix();
-   tracks(5, nvert, posX, posZ);
+   tracks(4, nvert, posX, posZ);
    sleepers(nvert, posX, posZ);
    glPopMatrix();
 
@@ -442,7 +442,7 @@ void display(void)
    glTranslatef(0, 70, 80);
    airPlane(lightTimer);
    glPopMatrix();
-   
+
    glutSwapBuffers();   //Useful for animation
 }
 
