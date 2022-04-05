@@ -29,56 +29,56 @@ GLuint txRoof;
 GLuint txShade;
 GLuint txConcrete;
 GLuint txHouseFront;
-void loadWagonTexture()				
+void loadWagonTexture()
 {
 	glGenTextures(1, &txWagon); 				// Create a Texture object
 	glBindTexture(GL_TEXTURE_2D, txWagon);		//Use this texture
     loadBMP("WagonTexture.bmp");
-    
+
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);	//Set texture parameters
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 }
 
-void loadRoofTexture()				
+void loadRoofTexture()
 {
     glGenTextures(1, &txRoof); 				// Create a Texture object
 	glBindTexture(GL_TEXTURE_2D, txRoof);		//Use this texture
     loadBMP("roofTexture.bmp");
-    
+
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);	//Set texture parameters
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 }
 
-void loadShadeTexture()				
+void loadShadeTexture()
 {
     glGenTextures(1, &txShade); 				// Create a Texture object
 	glBindTexture(GL_TEXTURE_2D, txShade);		//Use this texture
     loadBMP("shadeTexture.bmp");
-    
+
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);	//Set texture parameters
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 }
 
-void loadConcreteTexture()				
+void loadConcreteTexture()
 {
     glGenTextures(1, &txConcrete); 				// Create a Texture object
 	glBindTexture(GL_TEXTURE_2D, txConcrete);		//Use this texture
     loadBMP("concreteTexture.bmp");
-    
+
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);	//Set texture parameters
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 }
 
-void loadHouseFrontTexture()				
+void loadHouseFrontTexture()
 {
     glGenTextures(1, &txHouseFront); 				// Create a Texture object
 	glBindTexture(GL_TEXTURE_2D, txHouseFront);		//Use this texture
     loadBMP("house.bmp");
-    
+
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);	//Set texture parameters
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
@@ -92,7 +92,7 @@ void floor()
 {
 	float white[4] = {1., 1., 1., 1.};
 	float black[4] = {0};
-	glColor4f(0.2, 0.2, 0.2, 1.0);  //The floor is gray in colour
+	glColor4f(0.0, 0.2, 0.0, 1.0);  //The floor is gray in colour
 	glNormal3f(0.0, 1.0, 0.0);
 
     // lab02.3 Mkae floors diffuse surfaces.
@@ -308,7 +308,7 @@ void tunnel(const int start, const int length, const int nvert, const float* x, 
 
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, txConcrete);
-    
+
     glBegin(GL_QUADS);
     for (int i = start; i < start+length; i++)
     {
@@ -377,7 +377,7 @@ void tunnel(const int start, const int length, const int nvert, const float* x, 
         //        glNormal3f(v1U[0], 1, v1U[2]);
         glNormal3f(0, 0, 1);
         // inner facing outward
-        glTexCoord2f(0.5, 1.); 
+        glTexCoord2f(0.5, 1.);
         glVertex3f(a2[0], height, a2[2]);
         glTexCoord2f(1., 1.);
         glVertex3f(b2[0], height, b2[2]);
@@ -641,50 +641,54 @@ void railwayStation()
     glTranslatef(0, 0, 0);
     // glRotatef(90, 0, 1, 0);
     //    blockBase(40, 80, 5);
-    blockBase(30, 70, 5);
+    blockBase(45, 70, 5);
     glPopMatrix();
 
     // Quads building-1
     glPushMatrix();
-    glTranslatef(-15.0, 4, 40.0);
+    glTranslatef(-15.0, 4, 30.0);
     glRotatef(90, 0, 1, 0);
-    block1(30, 10, 35);
+    block1(30, 15, 35);
     glPopMatrix();
 
     // // building-1 roof
     glPushMatrix();
-    glTranslatef(-15.0, 39, 40.0);
+    glTranslatef(-15.0, 39, 30.0);
     glRotatef(90, 0, 1, 0);
-    roof(30, 10, 20);
+    roof(30, 15, 20);
     glPopMatrix();
 
     // // building-1 shade cover
     glPushMatrix();
-    glTranslatef(10.0, 36.8, 40.0);
+    glTranslatef(10.0, 36.8, 30.0);
     glRotatef(-90, 0, 1, 0);
-    slope2(30, 20, 2);
+    slope2(28.5, 20, 2);
     glPopMatrix();
 
     // // building-1 shade cover sticks
     glPushMatrix();
-    glTranslatef(10, 30, 68);
+    glColor4f(0.1, 0.4, 0.5, 1.0);
+    glTranslatef(10, 30, 58);
     glRotatef(25, 0, 0, 1);
     glRotatef(180, 0, 1, 0);
-    block1(16, 0.3, 0.3);
+    glScalef(65, 1, 1);
+    glutSolidCube(0.5);
     glPopMatrix();
 
     glPushMatrix();
-    glTranslatef(10, 30, 15);
+    glColor4f(0.1, 0.4, 0.5, 1.0);
+    glTranslatef(10, 30, 5);
     glRotatef(25, 0, 0, 1);
     glRotatef(180, 0, 1, 0);
-    block1(16, 0.3, 0.3);
+    glScalef(65, 1, 1);
+    glutSolidCube(0.5);
     glPopMatrix();
 
     // Quads building-2
     glPushMatrix();
-    glTranslatef(-15.0, 4, -2.0);
+    glTranslatef(-15.0, 4, -12.0);
     glRotatef(90, 0, 1, 0);
-    block2(12, 10, 20);
+    block2(12, 15, 20);
     glPopMatrix();
 
     // base slope
@@ -698,7 +702,7 @@ void blockBase(float length, float width, float height)
 {
     float buildingbaseHeight = 0.01;
 
-	glColor4f(0.8, 0.8, 0.8, 1.0);
+	glColor4f(0.6, 0.6, 0.6, 1.0);
 
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, txConcrete);
@@ -728,11 +732,11 @@ void blockBase(float length, float width, float height)
       glNormal3f(0.0, 1.0, 0.0);   //Facing +y (Top side)
       glTexCoord2f(0., 0.);
       glVertex3f(-length, height, width);
-      glTexCoord2f(1., 0.);
+      glTexCoord2f(0.8, 0.);
       glVertex3f(length, height,  width);
-      glTexCoord2f(1., 1.);
+      glTexCoord2f(0.8, 0.8);
       glVertex3f(length, height, -width);
-      glTexCoord2f(0., 1.);
+      glTexCoord2f(0., 0.8);
       glVertex3f(-length, height, -width);
 	glEnd();
 
@@ -776,13 +780,13 @@ void block1(float length, float width, float height)
       glVertex3f(-length, height, width);
 
       glNormal3f(0.0, 0.0, -1.0);   //Facing -z (Back side)
-    //    glTexCoord2f(0., 0.);
+      glTexCoord2f(0.7, 0.);
       glVertex3f(length, buildingbaseHeight, -width);
-    //    glTexCoord2f(1., 0.);
+      glTexCoord2f(1., 0.);
       glVertex3f(-length, buildingbaseHeight,-width);
-    //    glTexCoord2f(1., 87./256.);
+      glTexCoord2f(1., 1);
       glVertex3f(-length, height,-width);
-    //    glTexCoord2f(0., 87./256.);
+      glTexCoord2f(0.7, 1);
       glVertex3f(length, height, -width);
 
       glNormal3f(0.0, 1.0, 0.0);   //Facing +y (Top side)
@@ -797,20 +801,30 @@ void block1(float length, float width, float height)
 	glEnd();
 
 	// 2 small side polygons (left, right)
-    glDisable(GL_TEXTURE_2D);
-	glColor4f(0.5, 0.5, 0.5, 1.0);
+
+	glColor4f(0.8, 0.8, 0.8, 1.0);
 	glBegin(GL_QUADS);
-      glNormal3f(-1.0, 0.0, 0.0);   //Facing -x (Left side)
+      glNormal3f(1.0, 0.0, 0.0);   //Facing -x (Left side)
+      glTexCoord2f(0.7, 0.);
 	  glVertex3f(-length, buildingbaseHeight, -width);
+      glTexCoord2f(1., 0.);
 	  glVertex3f(-length, buildingbaseHeight, width);
+      glTexCoord2f(1., 1);
 	  glVertex3f(-length, height, width);
+      glTexCoord2f(0.7, 1);
 	  glVertex3f(-length, height, -width);
 
       glNormal3f(1.0, 0.0, 0.0);   //Facing +x (Right side)
+      glTexCoord2f(0.7, 0.);
 	  glVertex3f(length, buildingbaseHeight, width);
+      glTexCoord2f(1., 0.);
 	  glVertex3f(length, buildingbaseHeight, -width);
+      glTexCoord2f(1., 1);
 	  glVertex3f(length, height, -width);
+      glTexCoord2f(0.7, 1);
 	  glVertex3f(length, height, width);
+
+      glDisable(GL_TEXTURE_2D);
 	glEnd();
 }
 
@@ -836,13 +850,13 @@ void block2(float length, float width, float height)
       glVertex3f(-length, height, width);
 
       glNormal3f(0.0, 0.0, -1.0);   //Facing -z (Back side)
-    //    glTexCoord2f(0., 0.);
+      glTexCoord2f(0.7, 0.);
       glVertex3f(length, buildingbaseHeight, -width);
-    //    glTexCoord2f(1., 0.);
+      glTexCoord2f(1., 0.);
       glVertex3f(-length, buildingbaseHeight,-width);
-    //    glTexCoord2f(1., 87./256.);
+      glTexCoord2f(1., 0.5);
       glVertex3f(-length, height,-width);
-    //    glTexCoord2f(0., 87./256.);
+      glTexCoord2f(0.7, 0.5);
       glVertex3f(length, height, -width);
 
       glNormal3f(0.0, 1.0, 0.0);   //Facing +y (Top side)
@@ -857,7 +871,6 @@ void block2(float length, float width, float height)
 	glEnd();
 
 	// 2 small side polygons (left, right)
-    glDisable(GL_TEXTURE_2D);
 	glColor4f(0.5, 0.5, 0.5, 1.0);
 	glBegin(GL_QUADS);
       glNormal3f(-1.0, 0.0, 0.0);   //Facing -x (Left side)
@@ -866,11 +879,17 @@ void block2(float length, float width, float height)
 	  glVertex3f(-length, height, width);
 	  glVertex3f(-length, height, -width);
 
-      glNormal3f(1.0, 0.0, 0.0);   //Facing +x (Right side)
+      glNormal3f(0.0, 0.0, 1.0);   //Facing +x (Right side)
+      glTexCoord2f(0.7, 0.);
 	  glVertex3f(length, buildingbaseHeight, width);
+      glTexCoord2f(1., 0.);
 	  glVertex3f(length, buildingbaseHeight, -width);
+      glTexCoord2f(1., 0.5);
 	  glVertex3f(length, height, -width);
+      glTexCoord2f(0.7, 0.5);
 	  glVertex3f(length, height, width);
+
+      glDisable(GL_TEXTURE_2D);
 	glEnd();
 }
 
@@ -879,7 +898,7 @@ void slope1(float length, float width, float height)
 
     float buildingbaseHeight = 0.0;
 
-	glColor4f(0.7, 0.7, 0.7, 1.0);
+	glColor4f(0.55, 0.55, 0.55, 1.0);
 
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, txConcrete  );

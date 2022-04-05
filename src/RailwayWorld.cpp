@@ -30,8 +30,8 @@ int airPlaneTheta = 0;
 float icurrX;
 float icurrZ;
 // Train stop postion angle
-int trainStopPos = 110;
-int trainStopX = 15;
+// int trainStopPos = 110;
+int trainStopX = 40;
 int trainStopZ = 40;
 // Camera defaut params
 string cameraMode = "default";
@@ -280,7 +280,8 @@ void display(void)
    }
     
    // light0 position variable (directly above the origin)
-   float lgt_pos[] = {0.0f, 50.0f, 0.0f, 1.0f};
+   //   float lgt_pos[] = {0.0f, 50.0f, 0.0f, 1.0f};
+   float lgt_pos[] = {0.0f, 100.0f, 50.0f, 1.0f};
 
    glClear (GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
    glMatrixMode(GL_MODELVIEW);
@@ -302,7 +303,7 @@ void display(void)
        gluLookAt(icurrX, 25, icurrZ,  driverViewX, 20, driverViewZ,   0.0, 1.0, 0.0);
    } else if (cameraMode == "station")
    {
-       gluLookAt(150, 30, 95,  80, 30, 50,   0.0, 1.0, 0.0);
+       gluLookAt(150, 30, 130,  80, 30, 50,   0.0, 1.0, 0.0);
    } else if (cameraMode == "default") {
        gluLookAt(eye_x, eye_y, eye_z,  look_x, look_y, look_z,   0.0, 1.0, 0.0);
    }
@@ -326,7 +327,6 @@ void display(void)
    glPopMatrix();
 
    // Create engine (locomotive) moving around tracks
-   
    // //  Create and move the engine
    glPushMatrix();
    glTranslatef(icurrX, 1, icurrZ);
@@ -405,35 +405,39 @@ void display(void)
 
    // Create a train station
    glPushMatrix();
-   glTranslatef(30, 1, 85);
+   glTranslatef(30, 1, 105);
    glRotatef(90, 0, 1, 0);
-   // glScalef(0.5, 0.5, 0.5);
    railwayStation();
    glPopMatrix();
 
-   // Create signalLights
+   // Create signal Lights
+   // // signal light-1
    glPushMatrix();
    glTranslatef(-10, 0, -18);
    glRotatef(90, 0, 1, 0);
    signalLights(lightTimer);
    glPopMatrix();
 
+   // // signal light-2
    glPushMatrix();
    glTranslatef(-10, 0, -60);
    glRotatef(90, 0, 1, 0);
    signalLights(lightTimer);
    glPopMatrix();
 
+   // // signal light-3
    glPushMatrix();
    glTranslatef(-80, 0, 10);
    signalLights(lightTimer);
    glPopMatrix();
 
+   // // signal light-4
    glPushMatrix();
    glTranslatef(-117, 0, 12);
    signalLights(lightTimer);
    glPopMatrix();
 
+   // Create an airplane
    glPushMatrix();
    glRotatef(-airPlaneTheta, -0.2, 1, 0);
    glTranslatef(0, 70, 80);
