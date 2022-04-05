@@ -146,7 +146,7 @@ void createTrackMedianLine(const int nvert, const float* x, const float* z)
 void tracks(const float width, const int nvert, const float* x, const float* z)
 {
     float p1x,p1z, p2x,p2z, p3x, p3z;
-    float quadWidth = 3;
+    float quadWidth = 2;
     glColor4f(0.2, 0.3, 0.5, 1.0);
     glBegin(GL_QUADS);
     for (int i = 0; i < nvert; i++)
@@ -169,20 +169,22 @@ void tracks(const float width, const int nvert, const float* x, const float* z)
         }
 
         glm::vec3 p1(p1x, 1, p1z);
-        glm::vec3 p1p2(p2x-p1x, 1, p2z-p1z);
+        glm::vec3 p2(p2x, 1, p2z);
+        glm::vec3 p3(p3x, 1, p3z);
+        
+        glm::vec3 p1p2 = p2 - p1;
         glm::vec3 p1p2U = glm::normalize(p1p2);
-        glm::vec3 v1(p1p2U[2], 1, -p1p2U[0]);
-        glm::vec3 v1U = glm::normalize(v1);
+        glm::vec3 v1(p1p2U[2], p1p2U[1], -p1p2U[0]);
+        glm::vec3 v1U = v1;
         glm::vec3 a1 = p1 + v1U * width;
         glm::vec3 a2 = p1 + v1U * (width + quadWidth);
         glm::vec3 c1 = p1 + (-v1U) * width;
         glm::vec3 c2 = p1 + (-v1U) * (width + quadWidth);
 
-        glm::vec3 p2(p2x, 1, p2z);
-        glm::vec3 p2p3(p3x-p2x, 1, p3z-p2z);
+        glm::vec p2p3 = p3 - p2;
         glm::vec3 p2p3U = glm::normalize(p2p3);
-        glm::vec3 v2(p2p3U[2], 1, -p2p3U[0]);
-        glm::vec3 v2U = glm::normalize(v2);
+        glm::vec3 v2(p2p3U[2], p2p3U[1], -p2p3U[0]);
+        glm::vec3 v2U = v2;
         glm::vec3 b1 = p2 + v2U * width;
         glm::vec3 b2 = p2 + v2U * (width + quadWidth);
         glm::vec3 d1 = p2 + (-v2U) * width;

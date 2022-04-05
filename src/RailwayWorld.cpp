@@ -316,8 +316,7 @@ void display(void)
 
    // Create track median line
    glPushMatrix();
-   //   createTrackMedianLine(nvert, posX, posZ);
-   tracks(7, nvert, posX, posZ);
+   tracks(5, nvert, posX, posZ);
    sleepers(nvert, posX, posZ);
    glPopMatrix();
 
