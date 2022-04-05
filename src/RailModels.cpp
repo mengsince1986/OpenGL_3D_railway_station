@@ -180,7 +180,7 @@ void tracks(const float width, const int nvert, const float* x, const float* z)
         glm::vec3 c1 = p1 + (-v1) * width;
         glm::vec3 c2 = p1 + (-v1) * (width + quadWidth);
 
-        glm::vec p2p3 = p3 - p2;
+        glm::vec3 p2p3 = p3 - p2;
         glm::vec3 p2p3U = glm::normalize(p2p3);
         glm::vec3 v2(p2p3U[2], p2p3U[1], -p2p3U[0]);
         glm::vec3 b1 = p2 + v2 * width;
