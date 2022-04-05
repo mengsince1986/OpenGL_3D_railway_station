@@ -276,11 +276,11 @@ void sleepers(const int nvert, const float* x, const float* z)
 void tunnel(const int start, const int length, const int nvert, const float* x, const float* z)
 {
     float p1x,p1z, p2x,p2z, p3x, p3z;
-    float width = 20;
-    float quadWidth = 10;
-    float basequadWidth = 30;
+    float width = 15;
+    float quadWidth = 5;
+    float basequadWidth = 10;
     float height = 25;
-    float roofHeight = 5;
+    float roofHeight = 2.5;
     // glColor4f(0.2, 0.3, 0.6, 1.0);
     glColor4f(0.5, 0.5, 0.5, 1.0);
 
@@ -308,146 +308,187 @@ void tunnel(const int start, const int length, const int nvert, const float* x, 
         }
 
         glm::vec3 p1(p1x, 1, p1z);
-        glm::vec3 p1p2(p2x-p1x, 1, p2z-p1z);
-        glm::vec3 p1p2U = glm::normalize(p1p2);
-        glm::vec3 v1(p1p2U[2], 1, -p1p2U[0]);
-        glm::vec3 v1U = glm::normalize(v1);
-        glm::vec3 a1 = p1 + v1U * width;
-        glm::vec3 e1 = p1 + v1U * width;
-        glm::vec3 a2 = p1 + v1U * (width + quadWidth);
-        glm::vec3 r1 = a2;
-        glm::vec3 e2 = p1 + v1U * (width + basequadWidth);
-        glm::vec3 c1 = p1 + (-v1U) * width;
-        glm::vec3 g1 = p1 + (-v1U) * width;
-        glm::vec3 c2 = p1 + (-v1U) * (width + quadWidth);
-        glm::vec3 r4 = c2;
-        glm::vec3 g2 = p1 + (-v1U) * (width + basequadWidth);
-
         glm::vec3 p2(p2x, 1, p2z);
-        glm::vec3 p2p3(p3x-p2x, 1, p3z-p2z);
+        glm::vec3 p3(p3x, 1, p3z);
+        
+        glm::vec3 p1p2 = p2 - p1;
+        glm::vec3 p1p2U = glm::normalize(p1p2);
+        glm::vec3 v1(p1p2U[2], p1p2U[1], -p1p2U[0]);
+        glm::vec3 a1 = p1 + v1 * width;
+        glm::vec3 e1 = p1 + v1 * width;
+        glm::vec3 a2 = p1 + v1 * (width + quadWidth);
+        glm::vec3 r1 = a2;
+        glm::vec3 e2 = p1 + v1 * (width + basequadWidth);
+        glm::vec3 c1 = p1 + (-v1) * width;
+        glm::vec3 g1 = p1 + (-v1) * width;
+        glm::vec3 c2 = p1 + (-v1) * (width + quadWidth);
+        glm::vec3 r4 = c2;
+        glm::vec3 g2 = p1 + (-v1) * (width + basequadWidth);
+
+        glm::vec3 p2p3 = p3 - p2;
         glm::vec3 p2p3U = glm::normalize(p2p3);
-        glm::vec3 v2(p2p3U[2], 1, -p2p3U[0]);
-        glm::vec3 v2U = glm::normalize(v2);
-        glm::vec3 b1 = p2 + v2U * width;
-        glm::vec3 f1 = p2 + v2U * width;
-        glm::vec3 b2 = p2 + v2U * (width + quadWidth);
+        glm::vec3 v2(p2p3U[2], p2p3U[1], -p2p3U[0]);
+        glm::vec3 b1 = p2 + v2 * width;
+        glm::vec3 f1 = p2 + v2 * width;
+        glm::vec3 b2 = p2 + v2 * (width + quadWidth);
         glm::vec3 r2 = b2;
-        glm::vec3 f2 = p2 + v2U * (width + basequadWidth);
-        glm::vec3 d1 = p2 + (-v2U) * width;
-        glm::vec3 h1 = p2 + (-v2U) * width;
-        glm::vec3 d2 = p2 + (-v2U) * (width + quadWidth);
+        glm::vec3 f2 = p2 + v2 * (width + basequadWidth);
+        glm::vec3 d1 = p2 + (-v2) * width;
+        glm::vec3 h1 = p2 + (-v2) * width;
+        glm::vec3 d2 = p2 + (-v2) * (width + quadWidth);
         glm::vec3 r3 = d2;
-        glm::vec3 h2 = p2 + (-v2U) * (width + basequadWidth);
+        glm::vec3 h2 = p2 + (-v2) * (width + basequadWidth);
 
         glNormal3f(0, 1, 0);
         // inner quad facing up
+        glTexCoord2f(0., 0.);
         glVertex3f(a1[0], height, a1[2]);
+        glTexCoord2f(1., 0.);
         glVertex3f(a2[0], height, a2[2]);
+        glTexCoord2f(1., 1.);
         glVertex3f(b2[0], height, b2[2]);
+        glTexCoord2f(0., 1.);
         glVertex3f(b1[0], height, b1[2]);
 
         // outer track facing up
+        glTexCoord2f(0., 0.);
         glVertex3f(c1[0], height, c1[2]);
+        glTexCoord2f(1., 0.);
         glVertex3f(d1[0], height, d1[2]);
+        glTexCoord2f(1., 1.);
         glVertex3f(d2[0], height, d2[2]);
+        glTexCoord2f(0., 1.);
         glVertex3f(c2[0], height, c2[2]);
 
-        //        glNormal3f(v1U[0], 1, v1U[2]);
-        glNormal3f(0, 0, 1);
+        glNormal3f(v1[0], 1, v1[2]);
         // inner facing outward
-        glTexCoord2f(0.5, 1.);
+        glTexCoord2f(0., 0.);
         glVertex3f(a2[0], height, a2[2]);
-        glTexCoord2f(1., 1.);
+        glTexCoord2f(1., 0.);
         glVertex3f(b2[0], height, b2[2]);
-        glTexCoord2f(1., 0.5);
+        glTexCoord2f(1., 1.);
         glVertex3f(f2[0], 0, f2[2]);
-        glTexCoord2f(0.5, 0.5);
+        glTexCoord2f(0., 1.);
         glVertex3f(e2[0], 0, e2[2]);
 
         // outer facing outward
+        glTexCoord2f(0., 0.);
         glVertex3f(c1[0], height, c1[2]);
+        glTexCoord2f(1., 0.);
         glVertex3f(d1[0], height, d1[2]);
+        glTexCoord2f(1., 1.);
         glVertex3f(h1[0], 0, h1[2]);
+        glTexCoord2f(0., 1.);
         glVertex3f(g1[0], 0, g1[2]);
 
         // inner facing inward
+        glTexCoord2f(0., 0.);
         glVertex3f(a1[0], height, a1[2]);
+        glTexCoord2f(1., 0.);
         glVertex3f(b1[0], height, b1[2]);
+        glTexCoord2f(1., 1.);
         glVertex3f(f1[0], 0, f1[2]);
+        glTexCoord2f(0., 1.);
         glVertex3f(e1[0], 0, e1[2]);
         // outer facing inward
-        glTexCoord2f(1., 1.);
+        glTexCoord2f(0., 0.);
         glVertex3f(c2[0], height, c2[2]);
-        glTexCoord2f(0.5, 1.);
+        glTexCoord2f(1., 0.);
         glVertex3f(d2[0], height, d2[2]);
-        glTexCoord2f(0.5, 0.5);
+        glTexCoord2f(1., 1.);
         glVertex3f(h2[0], 0, h2[2]);
-        glTexCoord2f(1., 0.5);
+        glTexCoord2f(0., 1.);
         glVertex3f(g2[0], 0, g2[2]);
 
         // inner vertical quads
         glNormal3f(1, 0, 1);
-        glTexCoord2f(0.5, 1.);
+        glTexCoord2f(0., 0.);
         glVertex3f(a1[0], height, a1[2]);
-        glTexCoord2f(1., 1.);
+        glTexCoord2f(1., 0.);
         glVertex3f(a2[0], height, a2[2]);
-        glTexCoord2f(1., 0.5);
+        glTexCoord2f(1., 1.);
         glVertex3f(e2[0], 0, e2[2]);
-        glTexCoord2f(0.5, 0.5);
+        glTexCoord2f(0., 1.);
         glVertex3f(e1[0], 0, e1[2]);
 
+        glTexCoord2f(0., 0.);
         glVertex3f(b1[0], height, b1[2]);
+        glTexCoord2f(1., 0.);
         glVertex3f(b2[0], height, b2[2]);
+        glTexCoord2f(1., 1.);
         glVertex3f(f2[0], 0, f2[2]);
+        glTexCoord2f(0., 1.);
         glVertex3f(f1[0], 0, f1[2]);
 
         // outer vertical quads
-        glTexCoord2f(1., 1.);
+        glTexCoord2f(0., 0.);
         glVertex3f(c1[0], height, c1[2]);
-        glTexCoord2f(0.5, 1.);
+        glTexCoord2f(1., 0.);
         glVertex3f(c2[0], height, c2[2]);
-        glTexCoord2f(0.5, 0.5);
+        glTexCoord2f(1., 1.);
         glVertex3f(g2[0], 0, g2[2]);
-        glTexCoord2f(1., 0.5);
+        glTexCoord2f(0., 1.);
         glVertex3f(g1[0], 0, g1[2]);
 
+        glTexCoord2f(0., 0.);
         glVertex3f(d1[0], height, d1[2]);
+        glTexCoord2f(1., 0.);
         glVertex3f(d2[0], height, d2[2]);
+        glTexCoord2f(1., 1.);
         glVertex3f(h2[0], 0, h2[2]);
+        glTexCoord2f(0., 1.);
         glVertex3f(h1[0], 0, h1[2]);
 
         // roof quads
         // top upper quad
         glNormal3f(0, 1, 0);
-        glTexCoord2f(1., 0.5);
+        glTexCoord2f(0., 0.);
         glVertex3f(r1[0], height+roofHeight, r1[2]);
-        glTexCoord2f(1., 1.);
+        glTexCoord2f(1., 0.);
         glVertex3f(r2[0], height+roofHeight, r2[2]);
-        glTexCoord2f(0.5, 1.);
+        glTexCoord2f(1., 1.);
         glVertex3f(r3[0], height+roofHeight, r3[2]);
-        glTexCoord2f(0.5, 0.5);
+        glTexCoord2f(0., 1.);
         glVertex3f(r4[0], height+roofHeight, r4[2]);
         // front quad
-        glNormal3f(1, 0, 0);
+        glNormal3f(0, 0, 1);
+        glTexCoord2f(0., 0.);
         glVertex3f(r1[0], height+roofHeight, r1[2]);
+        glTexCoord2f(1., 0.);
         glVertex3f(r4[0], height+roofHeight, r4[2]);
+        glTexCoord2f(1., 1.);
         glVertex3f(c2[0], height, c2[2]);
+        glTexCoord2f(0., 1.);
         glVertex3f(a2[0], height, a2[2]);
         // back quad
+        glNormal3f(1, 0, 0);
+        glTexCoord2f(0., 0.);
         glVertex3f(r2[0], height+roofHeight, r2[2]);
+        glTexCoord2f(1., 0.);
         glVertex3f(r3[0], height+roofHeight, r3[2]);
+        glTexCoord2f(1., 1.);
         glVertex3f(d2[0], height, d2[2]);
+        glTexCoord2f(0., 1.);
         glVertex3f(b2[0], height, b2[2]);
-        glNormal3f(0, 0, 1);
+       
         // outer quad
+        glNormal3f(0, 1, 0);
+        glTexCoord2f(0., 0.);
         glVertex3f(r4[0], height+roofHeight, r4[2]);
+        glTexCoord2f(1., 0.);
         glVertex3f(r3[0], height+roofHeight, r3[2]);
+        glTexCoord2f(1., 1.);
         glVertex3f(d2[0], height, d2[2]);
+        glTexCoord2f(0., 1.);
         glVertex3f(c2[0], height, c2[2]);
         // innder quad
+        glTexCoord2f(0., 0.);
         glVertex3f(r1[0], height+roofHeight, r1[2]);
+        glTexCoord2f(1., 0.);
         glVertex3f(r2[0], height+roofHeight, r2[2]);
+        glTexCoord2f(1., 1.);
         glVertex3f(b2[0], height, b2[2]);
+        glTexCoord2f(0., 1.);
         glVertex3f(a2[0], height, a2[2]);
     }
     glEnd();
