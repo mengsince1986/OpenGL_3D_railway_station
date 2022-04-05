@@ -1175,8 +1175,8 @@ void airPlane(int timer)
       glutSolidCube(1.0);
     glPopMatrix();
 
-    //Boiler
-	GLUquadric *q = gluNewQuadric();   //Cylinder
+    //plane body
+	GLUquadric *q = gluNewQuadric();
     glPushMatrix();
       glColor4f(0.5, 0., 0., 1.0);
       glTranslatef(4.0, 10.0, 0.0);
