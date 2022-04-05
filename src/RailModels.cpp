@@ -533,7 +533,7 @@ void engine()
     base();
 
     //Cab
-    glColor4f(0.2, 0.4, 0.3, 1.0);
+    glColor4f(0.3, 0.2, 0.5, 1.0);
     glPushMatrix();
       glTranslatef(7.0, 8.5, 0.0);
       glScalef(6.0, 7.0, 10.0);
@@ -985,13 +985,13 @@ void slope2(float length, float width, float height)
       glVertex3f(length, height, width);
 
       glNormal3f(0.0, 1.0, 0.0);   //Facing +y (bottom side)
-      //      glTexCoord2f(0., 115./256.);
+      glTexCoord2f(0., 0.);
       glVertex3f(-length, buildingbaseHeight, width);
-      //      glTexCoord2f(1., 115./256.);
+      glTexCoord2f(1., 0.);
       glVertex3f(length, buildingbaseHeight,  width);
-      //      glTexCoord2f(1., 212./256.);
+      glTexCoord2f(1., 0.5);
       glVertex3f(length, buildingbaseHeight, -width);
-      //      glTexCoord2f(0., 212./256.);
+      glTexCoord2f(0., 0.5);
       glVertex3f(-length, buildingbaseHeight, -width);
 	glEnd();
 
